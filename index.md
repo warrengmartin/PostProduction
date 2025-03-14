@@ -6,9 +6,7 @@ layout: default
   <h1 class="editor-title">WARREN MARTIN</h1>
   <div class="tagline">VIDEO EDITOR · COLORIST · STORYTELLER</div>
 </div>
-<div class="page-link">
-  <a href="Testing.md">View Testing Page</a>
-</div>
+
 <div class="video-gallery">
   <div class="video-item">
     <div class="video-container">
