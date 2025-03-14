@@ -1,237 +1,148 @@
 /**
- * Enhanced Video Manager
+ * Advanced Video Portfolio System
  * 
- * This script makes it easy to add videos to your portfolio by:
- * 1. Processing special HTML comments with embedded iframes
- * 2. Converting them to the site's video gallery format
- * 3. Supporting automatic thumbnail generation
- * 4. Organizing videos into appropriate sections
+ * This script automatically transforms plain iframes into an interactive video gallery,
+ * organized by sections based on markdown headings.
  */
 document.addEventListener('DOMContentLoaded', function() {
-  console.log('Enhanced Video Manager initialized');
+  console.log('Advanced Video Portfolio System initializing...');
   
-  // Process the special comments containing videos
-  processVideoComments();
-  
-  // Process any direct YouTube iframes
-  processYouTubeIframes();
-  
-  // Watch for any dynamically added content
-  observeDOMChanges();
+  // Process sections (headings followed by iframes)
+  processSections();
 });
 
-function processVideoComments() {
-  // Get all comment nodes in the document
-  const allNodes = document.createNodeIterator(
-    document.documentElement, 
-    NodeFilter.SHOW_COMMENT
-  );
+function processSections() {
+  // Get all h1 elements - these are our section headings
+  const headings = document.querySelectorAll('h1');
   
-  let currentNode;
-  const videoComments = [];
-  
-  // Find all VIDEO comments
-  while (currentNode = allNodes.nextNode()) {
-    const commentText = currentNode.nodeValue.trim();
+  headings.forEach(heading => {
+    // Create section title element that matches our styling
+    const sectionTitle = document.createElement('h2');
+    sectionTitle.className = 'section-title';
+    sectionTitle.textContent = heading.textContent;
     
-    if (commentText.startsWith('VIDEO:')) {
-      // Extract section name
-      const sectionName = commentText.split('VIDEO:')[1].trim().split('\n')[0].toLowerCase();
-      
-      // Find the iframe in the comment
-      const tempDiv = document.createElement('div');
-      tempDiv.innerHTML = commentText.substring(commentText.indexOf('<iframe'));
-      const iframe = tempDiv.querySelector('iframe');
-      
-      // Get video details if available
-      const detailsDiv = tempDiv.querySelector('.video-details');
-      
-      if (iframe) {
-        videoComments.push({
-          commentNode: currentNode,
-          section: sectionName,
-          iframe: iframe.outerHTML,
-          details: detailsDiv ? detailsDiv.innerHTML : null
-        });
-      }
-    }
-  }
-  
-  // Process all found videos
-  videoComments.forEach(video => {
-    const section = document.querySelector(`.video-gallery[data-section="${video.section.toLowerCase()}"]`);
+    // Create gallery container for this section
+    const gallery = document.createElement('div');
+    gallery.className = 'video-gallery';
     
-    if (section) {
-      // Create temporary container for the iframe
-      const container = document.createElement('div');
-      container.innerHTML = video.iframe;
-      const iframe = container.querySelector('iframe');
-      
-      if (!iframe) return;
-      
-      // Extract necessary information
-      let videoSrc = iframe.src;
-      const videoTitle = iframe.getAttribute('title') || 'Video';
-      let thumbnailUrl = '';
-      let videoId = '';
-      
-      // Extract video ID for YouTube videos
-      if (videoSrc.includes('youtube.com/embed/')) {
-        videoId = videoSrc.split('/embed/')[1].split('?')[0];
-        thumbnailUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+    // Find all iframe elements after this heading until the next heading
+    let currentElement = heading.nextElementSibling;
+    const iframes = [];
+    
+    // Collect all iframes until the next heading
+    while (currentElement && currentElement.tagName !== 'H1') {
+      if (currentElement.tagName === 'IFRAME') {
+        iframes.push(currentElement);
       }
-      
-      // Create the video item with our gallery structure
-      const videoItem = document.createElement('div');
-      videoItem.className = 'video-item';
-      videoItem.setAttribute('data-video-src', videoSrc);
-      
-      const videoContainer = document.createElement('div');
-      videoContainer.className = 'video-container';
-      
-      if (thumbnailUrl) {
-        // For YouTube videos, use the thumbnail
-        const thumbnail = document.createElement('img');
-        thumbnail.className = 'video-thumbnail';
-        thumbnail.src = thumbnailUrl;
-        thumbnail.alt = videoTitle;
-        thumbnail.onerror = function() {
-          // Fallback to medium quality if HD isn't available
-          this.src = `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
-        };
-        
-        videoContainer.appendChild(thumbnail);
-      } else if (videoSrc.includes('screenpal.com')) {
-        // For Screenpal, create placeholder thumbnail
-        videoContainer.classList.add('screenpal-container');
-        const screenpalThumb = document.createElement('div');
-        screenpalThumb.className = 'screenpal-thumbnail';
-        const playIndicator = document.createElement('div');
-        playIndicator.className = 'play-indicator';
-        screenpalThumb.appendChild(playIndicator);
-        videoContainer.appendChild(screenpalThumb);
-      } else {
-        // For other videos, create a generic thumbnail
-        const genericThumb = document.createElement('div');
-        genericThumb.className = 'generic-thumbnail';
-        genericThumb.textContent = '▶';
-        videoContainer.appendChild(genericThumb);
-      }
-      
-      videoItem.appendChild(videoContainer);
-      
-      // Add title and description if available
-      if (video.details) {
-        const detailsDiv = document.createElement('div');
-        detailsDiv.innerHTML = video.details;
-        const title = detailsDiv.querySelector('h3');
-        const desc = detailsDiv.querySelector('p');
-        
-        if (title) videoItem.appendChild(title);
-        if (desc) videoItem.appendChild(desc);
-      } else {
-        // Add default title based on iframe title
-        const title = document.createElement('h3');
-        title.textContent = videoTitle;
-        videoItem.appendChild(title);
-        
-        // Add default description
-        const desc = document.createElement('p');
-        desc.textContent = 'Click to view video';
-        videoItem.appendChild(desc);
-      }
-      
-      // Add it to the section
-      section.appendChild(videoItem);
-    }
-  });
-}
-
-// Process any direct YouTube iframes that might be on the page
-function processYouTubeIframes() {
-  // Find all YouTube iframes that aren't inside a video-item already
-  const iframes = document.querySelectorAll('iframe[src*="youtube.com/embed/"]:not(.video-item iframe):not(#modal-iframe)');
-  
-  iframes.forEach(iframe => {
-    if (iframe.closest('.video-item') || iframe.hasAttribute('data-processed')) {
-      return;
+      currentElement = currentElement.nextElementSibling;
     }
     
-    iframe.setAttribute('data-processed', 'true');
+    // Process each iframe into a video item
+    iframes.forEach(iframe => {
+      const videoItem = createVideoItemFromIframe(iframe);
+      gallery.appendChild(videoItem);
+    });
     
-    // Find which section this iframe belongs to
-    const section = iframe.closest('.video-gallery');
+    // Replace the heading with our section title
+    heading.parentNode.replaceChild(sectionTitle, heading);
     
-    if (!section) return;
-    
-    // Extract video ID and parameters
-    const src = iframe.src;
-    let videoId = '';
-    
-    if (src.includes('/embed/')) {
-      videoId = src.split('/embed/')[1].split('?')[0];
-    } else if (src.includes('youtu.be/')) {
-      videoId = src.split('youtu.be/')[1].split('?')[0];
-    } else if (src.includes('v=')) {
-      const urlParams = new URLSearchParams(src.split('?')[1]);
-      videoId = urlParams.get('v');
+    // Insert the gallery after the section title
+    if (sectionTitle.nextElementSibling) {
+      sectionTitle.parentNode.insertBefore(gallery, sectionTitle.nextElementSibling);
+    } else {
+      sectionTitle.parentNode.appendChild(gallery);
     }
     
-    if (!videoId) return;
+    // Remove the original iframes since they're now part of gallery
+    iframes.forEach(iframe => {
+      if (iframe.parentNode) {
+        iframe.parentNode.removeChild(iframe);
+      }
+    });
     
-    // Create the video item structure
-    const videoItem = createVideoItem(src, videoId, iframe.getAttribute('title'));
-    
-    // Replace the iframe with our enhanced element
-    iframe.parentNode.replaceChild(videoItem, iframe);
+    console.log(`Processed section: ${sectionTitle.textContent} with ${iframes.length} videos`);
   });
   
-  // Add click handlers to any new video items
-  addVideoItemClickHandlers();
+  // Add click handlers to all video items
+  addClickHandlers();
 }
 
-function createVideoItem(src, videoId, title) {
+function createVideoItemFromIframe(iframe) {
   const videoItem = document.createElement('div');
   videoItem.className = 'video-item';
+  
+  // Get source and other attributes from the iframe
+  const src = iframe.src;
   videoItem.setAttribute('data-video-src', src);
   
+  const title = iframe.getAttribute('title') || 'Video';
+  
+  // Create container for video thumbnail
   const container = document.createElement('div');
   container.className = 'video-container';
   
-  const thumbnail = document.createElement('img');
-  thumbnail.className = 'video-thumbnail';
-  thumbnail.src = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
-  thumbnail.alt = title || 'Video';
-  thumbnail.onerror = function() {
-    this.src = `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
-  };
+  // Determine the video platform and create appropriate thumbnail
+  if (src.includes('youtube.com/embed/')) {
+    // YouTube video - extract ID and create thumbnail
+    const videoId = src.split('/embed/')[1].split('?')[0];
+    const thumbnail = document.createElement('img');
+    thumbnail.className = 'video-thumbnail';
+    thumbnail.src = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+    thumbnail.alt = title;
+    thumbnail.onerror = function() {
+      this.src = `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
+    };
+    container.appendChild(thumbnail);
+  } 
+  else if (src.includes('screenpal.com')) {
+    // Screenpal video
+    container.classList.add('screenpal-container');
+    const screenpalThumb = document.createElement('div');
+    screenpalThumb.className = 'screenpal-thumbnail';
+    const playIndicator = document.createElement('div');
+    playIndicator.className = 'play-indicator';
+    screenpalThumb.appendChild(playIndicator);
+    container.appendChild(screenpalThumb);
+  } 
+  else {
+    // Generic video - create placeholder
+    const genericThumb = document.createElement('div');
+    genericThumb.className = 'generic-thumbnail';
+    genericThumb.textContent = '▶';
+    container.appendChild(genericThumb);
+  }
   
-  container.appendChild(thumbnail);
   videoItem.appendChild(container);
   
-  // Add title if available
-  const titleElem = document.createElement('h3');
-  titleElem.textContent = title || 'Video';
-  videoItem.appendChild(titleElem);
+  // Add title element
+  const titleElement = document.createElement('h3');
+  titleElement.textContent = title;
+  videoItem.appendChild(titleElement);
   
-  // Add simple description
-  const desc = document.createElement('p');
-  desc.textContent = 'Click to view video';
-  videoItem.appendChild(desc);
+  // Add default description
+  const description = document.createElement('p');
+  description.textContent = 'Click to play this video';
+  videoItem.appendChild(description);
   
   return videoItem;
 }
 
-function addVideoItemClickHandlers() {
+function addClickHandlers() {
+  const modal = document.getElementById('video-modal');
+  const modalIframe = document.getElementById('modal-iframe');
+  const closeBtn = document.querySelector('.close-modal');
+  
+  if (!modal || !modalIframe || !closeBtn) {
+    console.error('Modal elements not found');
+    return;
+  }
+  
   // Add click handler to all video items
-  document.querySelectorAll('.video-item:not([data-initialized])').forEach(item => {
-    item.setAttribute('data-initialized', 'true');
+  document.querySelectorAll('.video-item').forEach(item => {
     item.addEventListener('click', function() {
       const videoSrc = this.getAttribute('data-video-src');
-      const modal = document.getElementById('video-modal');
-      const modalIframe = document.getElementById('modal-iframe');
-      
-      if (videoSrc && modal && modalIframe) {
+      if (videoSrc) {
+        console.log('Opening video in modal:', videoSrc);
         modalIframe.src = videoSrc;
         modal.style.display = 'flex';
         setTimeout(() => modal.classList.add('show'), 10);
@@ -239,34 +150,32 @@ function addVideoItemClickHandlers() {
       }
     });
   });
-}
-
-function observeDOMChanges() {
-  const observer = new MutationObserver(function(mutations) {
-    let shouldProcess = false;
-    
-    mutations.forEach(function(mutation) {
-      if (mutation.addedNodes.length) {
-        for (let i = 0; i < mutation.addedNodes.length; i++) {
-          const node = mutation.addedNodes[i];
-          if (node.nodeType === 8) { // Comment node
-            if (node.nodeValue.trim().startsWith('VIDEO:')) {
-              shouldProcess = true;
-              break;
-            }
-          }
-        }
-      }
-    });
-    
-    if (shouldProcess) {
-      processVideoComments();
-      addVideoItemClickHandlers();
+  
+  // Close button handler
+  closeBtn.addEventListener('click', function() {
+    closeModal();
+  });
+  
+  // Close on click outside content
+  modal.addEventListener('click', function(e) {
+    if (e.target === modal) {
+      closeModal();
     }
   });
   
-  observer.observe(document.body, {
-    childList: true,
-    subtree: true
+  // Close on ESC key
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && modal.classList.contains('show')) {
+      closeModal();
+    }
   });
+  
+  function closeModal() {
+    modal.classList.remove('show');
+    setTimeout(() => {
+      modal.style.display = 'none';
+      modalIframe.src = '';
+    }, 300);
+    document.body.style.overflow = 'auto';
+  }
 }
