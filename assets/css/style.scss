@@ -7,7 +7,7 @@
 .video-gallery {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 20px;
+  gap: 40px;  /* Increased from 20px to 40px for more spacing */
   margin: 20px 0;
 }
 
@@ -17,6 +17,9 @@
   text-align: center;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   border-radius: 10px;
+  padding: 15px;  /* Added padding inside each video item */
+  margin-bottom: 10px;  /* Added margin at bottom */
+  background-color: rgba(30, 30, 30, 0.5);  /* Subtle background for separation */
   overflow: hidden;
 }
 
