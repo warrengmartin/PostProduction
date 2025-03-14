@@ -102,10 +102,7 @@ end
 
 ### Video
 
-<video controls width="600">
-  <source src="path/to/video.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+<iframe width="600" height="338" src="https://www.youtube.com/embed/KwBg3-iJQ9U" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 ### Definition lists can be used with HTML syntax.
 
