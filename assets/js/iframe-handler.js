@@ -7,9 +7,39 @@
 document.addEventListener('DOMContentLoaded', function() {
   console.log('Advanced Video Portfolio System initializing...');
   
+  // Make sure the editor intro is visible and properly styled
+  ensureEditorIntroIsFormatted();
+  
   // Process sections (headings followed by iframes)
   processSections();
 });
+
+function ensureEditorIntroIsFormatted() {
+  const intro = document.querySelector('.editor-intro');
+  if (intro) {
+    // Make sure the intro is visible and properly styled
+    intro.style.display = 'block';
+    intro.style.margin = '80px auto 60px';
+    intro.style.maxWidth = '800px';
+    intro.style.textAlign = 'center';
+    
+    // Ensure the title has the animation
+    const title = intro.querySelector('.editor-title');
+    if (title) {
+      title.style.background = 'linear-gradient(to right, #e6b800, #ffcc00, #ffffff, #ffcc00, #e6b800)';
+      title.style.webkitBackgroundClip = 'text';
+      title.style.backgroundClip = 'text';
+      title.style.webkitTextFillColor = 'transparent';
+      title.style.animation = 'shine 3s linear infinite';
+      title.style.textShadow = '0 0 10px rgba(255, 204, 0, 0.7)';
+      title.style.fontSize = '3rem';
+    }
+    
+    console.log("Editor intro formatting ensured");
+  } else {
+    console.warn("Editor intro not found");
+  }
+}
 
 function processSections() {
   // Get all h1 elements - these are our section headings
