@@ -11,7 +11,7 @@ layout: default
     <p>This is a short description of the first video.</p>
   </div>
   <div class="video-item">
-    <iframe width="100%" height="200" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    <iframe width="200%" height="200" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     <h3>Video Title 2</h3>
     <p>This is a short description of the second video.</p>
   </div>

@@ -15,11 +15,25 @@
   aspect-ratio: 16 / 9;
   overflow: hidden;
   text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.video-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
 .video-item h3 {
   margin: 10px 0 5px;
   font-size: 18px;
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.video-item:hover h3 {
+  color: #ffcc00;
+  text-shadow: 0 0 5px rgba(255, 204, 0, 0.7);
 }
 
 .video-item p {
@@ -74,4 +88,35 @@
   #title p {
     font-size: 0.9rem;
   }
+}
+
+/* Particles background */
+#particles-js {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
+
+/* Fade-in animation for video items */
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.fade-in-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Video element styling */
+.video-item iframe {
+  transition: all 0.3s ease;
+}
+
+.video-item:hover iframe {
+  filter: brightness(1.1);
 }
