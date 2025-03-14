@@ -20,6 +20,7 @@
   padding: 15px;  /* Added padding inside each video item */
   margin-bottom: 30px;  /* Increased from 10px to 30px for more spacing below items */
   background-color: rgba(30, 30, 30, 0.5);  /* Subtle background for separation */
+  cursor: pointer;
 }
 
 /* Video container to maintain aspect ratio for iframe */
@@ -90,25 +91,23 @@
   display: none;
 }
 
-/* Modal styles */
+/* Modal styles - fixed to ensure modal works correctly */
 .modal {
-  display: none;
+  display: none; /* Hidden by default */
   position: fixed;
-  z-index: 1000;
+  z-index: 2000; /* Ensure high z-index */
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
-  overflow: auto;
   background-color: rgba(0, 0, 0, 0.9);
+  align-items: center;
+  justify-content: center;
   opacity: 0;
   transition: opacity 0.3s ease;
 }
 
 .modal.show {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   opacity: 1;
 }
 
