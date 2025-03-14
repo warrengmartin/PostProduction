@@ -100,6 +100,12 @@ end
 
 ![Branching](https://guides.github.com/activities/hello-world/branching.png)
 
+### Video
+
+<video controls width="600">
+  <source src="path/to/video.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
 
 ### Definition lists can be used with HTML syntax.
 
