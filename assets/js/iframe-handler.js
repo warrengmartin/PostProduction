@@ -17,29 +17,74 @@ document.addEventListener('DOMContentLoaded', function() {
 function ensureEditorIntroIsFormatted() {
   const intro = document.querySelector('.editor-intro');
   if (intro) {
-    // Make sure the intro is visible and properly styled
+    // Make the intro prominent and properly styled
     intro.style.display = 'block';
     intro.style.margin = '80px auto 60px';
     intro.style.maxWidth = '800px';
     intro.style.textAlign = 'center';
     
-    // Ensure the title has the animation
+    // Force styles directly on the title element
     const title = intro.querySelector('.editor-title');
     if (title) {
-      title.style.background = 'linear-gradient(to right, #e6b800, #ffcc00, #ffffff, #ffcc00, #e6b800)';
+      // Apply all styles inline to override any CSS issues
+      title.style.fontSize = '3rem';
+      title.style.letterSpacing = '5px';
+      title.style.marginBottom = '10px';
+      title.style.fontFamily = '"Courier New", monospace';
+      title.style.textShadow = '0 0 10px rgba(255, 204, 0, 0.7)';
+      title.style.display = 'block';
+      title.style.width = '100%';
+      title.style.textAlign = 'center';
+      
+      // Set up the gradient and animation
+      title.style.backgroundImage = 'linear-gradient(to right, #e6b800, #ffcc00, #ffffff, #ffcc00, #e6b800)';
+      title.style.backgroundSize = '200% auto';
       title.style.webkitBackgroundClip = 'text';
       title.style.backgroundClip = 'text';
       title.style.webkitTextFillColor = 'transparent';
+      title.style.textFillColor = 'transparent';
+      
+      // Apply animation with important flag
       title.style.animation = 'shine 3s linear infinite';
-      title.style.textShadow = '0 0 10px rgba(255, 204, 0, 0.7)';
-      title.style.fontSize = '3rem';
     }
     
-    console.log("Editor intro formatting ensured");
+    // Similarly enforce styles for tagline
+    const tagline = intro.querySelector('.tagline');
+    if (tagline) {
+      tagline.style.fontFamily = '"Courier New", monospace';
+      tagline.style.letterSpacing = '2px';
+      tagline.style.color = '#999';
+      tagline.style.fontSize = '1rem';
+      tagline.style.marginBottom = '40px';
+      tagline.style.textAlign = 'center';
+      tagline.style.display = 'block';
+      tagline.style.width = '100%';
+    }
+    
+    console.log("Editor intro styling reinforced");
   } else {
     console.warn("Editor intro not found");
   }
 }
+
+// Add a special function to reapply the animation periodically
+function reapplyTitleAnimation() {
+  const title = document.querySelector('.editor-title');
+  if (title) {
+    // Reset animation
+    title.style.animation = 'none';
+    
+    // Force browser reflow
+    void title.offsetWidth;
+    
+    // Restart animation
+    title.style.animation = 'shine 3s linear infinite';
+    console.log("Title animation refreshed");
+  }
+}
+
+// Call the reapply function periodically
+setInterval(reapplyTitleAnimation, 3000);
 
 function processSections() {
   // Get all h1 elements - these are our section headings
@@ -209,3 +254,12 @@ function addClickHandlers() {
     document.body.style.overflow = 'auto';
   }
 }
+
+// Make sure we properly initialize the styling
+document.addEventListener('DOMContentLoaded', function() {
+  // Call this immediately
+  ensureEditorIntroIsFormatted();
+  
+  // And again after a slight delay to handle any race conditions
+  setTimeout(ensureEditorIntroIsFormatted, 500);
+});

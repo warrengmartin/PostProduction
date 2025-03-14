@@ -603,3 +603,51 @@ body::before {
   border: none;
   border-radius: 5px;
 }
+
+/* Ensure the editor intro is prominent and centered */
+.editor-intro {
+  margin: 80px auto 60px !important;
+  max-width: 800px !important;
+  text-align: center !important;
+  display: block !important;
+  position: relative !important;
+  z-index: 10 !important;
+}
+
+/* Title styling with extra specificity */
+.wrapper section .editor-intro .editor-title,
+.editor-title {
+  font-size: 3rem !important;
+  letter-spacing: 5px !important;
+  margin-bottom: 10px !important;
+  font-family: "Courier New", monospace !important;
+  text-shadow: 0 0 10px rgba(255, 204, 0, 0.7) !important;
+  background: linear-gradient(to right, #e6b800, #ffcc00, #ffffff, #ffcc00, #e6b800) !important;
+  background-size: 200% auto !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  text-fill-color: transparent !important;
+  animation: shine 3s linear infinite !important;
+  text-align: center !important;
+  display: block !important;
+  width: 100% !important;
+}
+
+.wrapper section .editor-intro .tagline,
+.tagline {
+  font-family: "Courier New", monospace !important;
+  letter-spacing: 2px !important;
+  color: #999 !important;
+  font-size: 1rem !important;
+  margin-bottom: 40px !important;
+  text-align: center !important;
+  display: block !important;
+  width: 100% !important;
+}
+
+/* Define the shine animation with higher specificity */
+@keyframes shine {
+  0% { background-position: -200px center !important; }
+  100% { background-position: 200px center !important; }
+}
