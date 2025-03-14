@@ -39,8 +39,26 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelectorAll('.video-item').forEach(item => {
     item.addEventListener('click', function() {
       console.log('Video item clicked');
-      const videoSrc = this.getAttribute('data-video-src');
+      let videoSrc = this.getAttribute('data-video-src');
+      
       if (videoSrc) {
+        // Handle different YouTube URL formats
+        if (videoSrc.includes('youtu.be/')) {
+          // Convert youtu.be links to embed format
+          const videoId = videoSrc.split('youtu.be/')[1].split('?')[0];
+          videoSrc = `https://www.youtube.com/embed/${videoId}`;
+        } else if (videoSrc.includes('youtube.com/watch')) {
+          // Convert watch links to embed format
+          const urlParams = new URLSearchParams(videoSrc.split('?')[1]);
+          const videoId = urlParams.get('v');
+          videoSrc = `https://www.youtube.com/embed/${videoId}`;
+        }
+        
+        // Ensure we add any URL parameters that were in the original embed code
+        if (this.hasAttribute('data-params')) {
+          videoSrc += (videoSrc.includes('?') ? '&' : '?') + this.getAttribute('data-params');
+        }
+        
         console.log('Loading video:', videoSrc);
         // Set the iframe source to the video URL
         modalIframe.src = videoSrc;
@@ -119,3 +137,76 @@ window.addEventListener('load', function() {
     modal.classList.remove('show');
   }
 });
+
+// Add utility function to extract YouTube video IDs and generate thumbnails
+function createYouTubeItems() {
+  const iframes = document.querySelectorAll('iframe[src*="youtube.com/embed/"]');
+  
+  iframes.forEach(iframe => {
+    // Only process iframes that aren't already part of the system
+    if (iframe.closest('.video-item') || iframe.id === 'modal-iframe') return;
+    
+    // Extract the video ID and parameters
+    const src = iframe.src;
+    const videoId = src.split('/embed/')[1].split('?')[0];
+    const params = src.includes('?') ? src.split('?')[1] : '';
+    
+    // Create the video item structure
+    const videoItem = document.createElement('div');
+    videoItem.className = 'video-item';
+    videoItem.setAttribute('data-video-src', src);
+    if (params) videoItem.setAttribute('data-params', params);
+    
+    const container = document.createElement('div');
+    container.className = 'video-container';
+    
+    const thumbnail = document.createElement('img');
+    thumbnail.className = 'video-thumbnail';
+    thumbnail.src = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+    thumbnail.alt = 'Video Thumbnail';
+    thumbnail.onerror = function() {
+      // Fallback to medium quality if HD isn't available
+      this.src = `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
+    };
+    
+    container.appendChild(thumbnail);
+    videoItem.appendChild(container);
+    
+    // Add title and description placeholders
+    const title = document.createElement('h3');
+    title.textContent = 'YouTube Video';
+    
+    const desc = document.createElement('p');
+    desc.textContent = 'Click to play this video';
+    
+    videoItem.appendChild(title);
+    videoItem.appendChild(desc);
+    
+    // Replace the iframe with the new structure
+    iframe.parentNode.replaceChild(videoItem, iframe);
+  });
+  
+  // Reinitialize click handlers
+  document.querySelectorAll('.video-item').forEach(item => {
+    if (!item.hasAttribute('data-initialized')) {
+      item.setAttribute('data-initialized', 'true');
+      item.addEventListener('click', openVideoModal);
+    }
+  });
+}
+
+function openVideoModal() {
+  const videoSrc = this.getAttribute('data-video-src');
+  const modal = document.getElementById('video-modal');
+  const modalIframe = document.getElementById('modal-iframe');
+  
+  if (videoSrc && modal && modalIframe) {
+    modalIframe.src = videoSrc;
+    modal.style.display = 'flex';
+    setTimeout(() => modal.classList.add('show'), 10);
+    document.body.style.overflow = 'hidden';
+  }
+}
+
+// Run the function when the page loads and after any dynamic content changes
+window.addEventListener('load', createYouTubeItems);
