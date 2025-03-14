@@ -161,3 +161,159 @@
 .video-item:hover iframe {
   filter: brightness(1.1);
 }
+
+/* Film-related styling elements */
+
+/* Film grain overlay */
+.film-grain {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.08;
+  pointer-events: none;
+  z-index: 1;
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc1IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGZpbHRlcj0idXJsKCNhKSIgb3BhY2l0eT0iLjA1IiBkPSJNMCAwaDMwMHYzMDBIMHoiLz48L3N2Zz4=');
+}
+
+/* Filmstrip header */
+.filmstrip-container {
+  position: relative;
+  width: 100%;
+  height: 80px;
+  overflow: hidden;
+  margin-bottom: 30px;
+  opacity: 0.9;
+}
+
+.filmstrip {
+  position: absolute;
+  width: 200%;
+  height: 80px;
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjgwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogIDxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxMDAiIGhlaWdodD0iODAiIGZpbGw9IiMxMTEiLz4KICA8cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiMwMDAiLz4KICA8cmVjdCB4PSI5MCIgeT0iMCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjMDAwIi8+CiAgPHJlY3QgeD0iMCIgeT0iNzAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMCIvPgogIDxyZWN0IHg9IjkwIiB5PSI3MCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjMDAwIi8+CiAgPHJlY3QgeD0iMCIgeT0iMzUiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMCIvPgogIDxyZWN0IHg9IjkwIiB5PSIzNSIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjMDAwIi8+Cjwvc3ZnPg==');
+  background-repeat: repeat-x;
+  animation: filmstrip-animation 30s linear infinite;
+}
+
+@keyframes filmstrip-animation {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* Clapperboard animation */
+.clapperboard {
+  position: relative;
+  width: 180px;
+  height: 120px;
+  margin: 0 auto 30px;
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+
+.clapper-top, .clapper-bottom {
+  position: absolute;
+  width: 100%;
+  background: #111;
+  border: 2px solid #333;
+  box-sizing: border-box;
+}
+
+.clapper-top {
+  height: 40px;
+  top: 0;
+  z-index: 2;
+  transform-origin: bottom;
+  animation: clapper-animation 5s ease-in-out infinite;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: repeating-linear-gradient(90deg, #111, #111 60%, #222 60%, #222 100%);
+}
+
+.clapper-bottom {
+  height: 80px;
+  bottom: 0;
+  z-index: 1;
+  padding: 10px;
+  background-image: repeating-linear-gradient(90deg, #111, #111 60%, #222 60%, #222 100%);
+}
+
+.clapper-top::after, .clapper-bottom::after {
+  content: '';
+  position: absolute;
+  left: 10px;
+  width: calc(100% - 20px);
+  height: 20px;
+  background: #ffcc00;
+  opacity: 0.7;
+}
+
+.clapper-top::after {
+  bottom: 5px;
+}
+
+.clapper-bottom::after {
+  top: 15px;
+}
+
+.clapper-text {
+  color: #fff;
+  font-size: 12px;
+  z-index: 3;
+  position: relative;
+  top: 50px;
+  text-align: center;
+}
+
+@keyframes clapper-animation {
+  0%, 10% {
+    transform: rotateX(0deg);
+  }
+  15% {
+    transform: rotateX(45deg);
+  }
+  20% {
+    transform: rotateX(0deg);
+  }
+  100% {
+    transform: rotateX(0deg);
+  }
+}
+
+/* Video film icon */
+.film-icon {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+  vertical-align: middle;
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cGF0aCBkPSJNNTEyIDEyMHYyNzJjMCAyNi41LTIxLjUgNDgtNDggNDhIOTZjLTI2LjUgMC00OC0yMS41LTQ4LTQ4VjEyMGMwLTI2LjUgMjEuNS00OCA0OC00OGg2MS44YzE2LjYgMCAzMS43LTEzIDQyLjctMzNzMjktMTUgMjktMTVoOTkuNnMxOC0xNSAyOS4xIDE1YzExIDIwIDE0LjggMzMgNDIuNyAzM0g0NjRjMjYuNSAwIDQ4IDIxLjUgNDggNDh6bS0xNjYuMS05OS4xbC0xMC4yLTEwLjJMMjk5LjQgMjAuNWMtMy44LTMuOC0xMC0zLjgtMTMuOCAwTDIwOS45IDk2LjNsLTEwLjItMTAuMi0yMS4yIDIxLjJjLTQuNyA0LjctNC43IDEyLjMgMCAxN2wxMjggMTI4YzQuNyA0LjcgMTIuMyA0LjcgMTcgMGwyMS4yLTIxLjItMTAuMi0xMC4yIDc1LjgtNzUuOGMzLjgtMy44IDMuOC0xMCAwLTEzLjhsLTEwLjUtMTAuNS03NS44IDc1Ljh6Ii8+PC9zdmc+');
+  background-size: contain;
+  background-repeat: no-repeat;
+  opacity: 0.7;
+  filter: invert(1);
+}
+
+/* Video title with film icon */
+.video-item h3 {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Vignette effect */
+.vignette-effect {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+  background: radial-gradient(ellipse at center, rgba(0,0,0,0) 65%, rgba(0,0,0,0.7) 100%);
+}
