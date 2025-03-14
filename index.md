@@ -22,30 +22,3 @@ layout: default
   </div>
   <!-- Add more videos here -->
 </div>
-
-<style>
-/* Responsive grid layout for the video gallery */
-.video-gallery {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 20px;
-  margin: 20px 0;
-}
-
-.video-item {
-  aspect-ratio: 16 / 9;
-  overflow: hidden;
-  text-align: center;
-}
-
-.video-item h3 {
-  margin: 10px 0 5px;
-  font-size: 18px;
-}
-
-.video-item p {
-  margin: 0;
-  font-size: 14px;
-  color: #666;
-}
-</style>
