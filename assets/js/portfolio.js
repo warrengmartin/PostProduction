@@ -30,13 +30,26 @@ document.addEventListener('DOMContentLoaded', function() {
       const iframe = this.parentNode.querySelector('iframe');
       const src = iframe.src;
       
-      // Trigger YouTube play by adding autoplay parameter
       if (src.includes('youtube.com')) {
+        // Trigger YouTube play by adding autoplay parameter
         iframe.src = src + (src.includes('?') ? '&autoplay=1' : '?autoplay=1');
-        
-        // Hide the overlay after clicking
-        this.style.display = 'none';
+      } else if (src.includes('screenpal.com')) {
+        // For Screenpal videos
+        iframe.src = src + (src.includes('?') ? '&autoplay=1' : '?autoplay=1');
       }
+      
+      // Hide the overlay after clicking
+      this.style.display = 'none';
     });
   });
+
+  // Initialize any Screenpal players if they need special handling
+  function initScreenpalPlayers() {
+    if (typeof window.ScreenPal !== 'undefined' && window.ScreenPal.initPlayers) {
+      window.ScreenPal.initPlayers();
+    }
+  }
+  
+  // Call after a small delay to ensure script has loaded
+  setTimeout(initScreenpalPlayers, 500);
 });
