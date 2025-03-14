@@ -23,34 +23,6 @@ document.addEventListener('DOMContentLoaded', function() {
     observer.observe(item);
   });
   
-  // Animate timecode in the video editor timeline
-  function updateTimecode() {
-    const timecode = document.querySelector('.timecode');
-    if (!timecode) return;
-    
-    let seconds = 0;
-    let frames = 0;
-    const fps = 30;
-    
-    setInterval(() => {
-      frames++;
-      if (frames >= fps) {
-        frames = 0;
-        seconds++;
-      }
-      
-      const minutes = Math.floor(seconds / 60);
-      const remainingSeconds = seconds % 60;
-      
-      const formattedTime = 
-        `00:${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}:${frames.toString().padStart(2, '0')}`;
-      
-      timecode.textContent = formattedTime;
-    }, 1000 / fps);
-  }
-  
-  updateTimecode();
-  
   // Add click handlers to video overlays
   document.querySelectorAll('.video-overlay').forEach(overlay => {
     overlay.addEventListener('click', function() {

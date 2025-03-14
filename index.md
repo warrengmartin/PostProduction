@@ -2,28 +2,7 @@
 layout: default
 ---
 
-<div class="filmstrip-container">
-  <div class="filmstrip"></div>
-</div>
-
 <div class="editor-intro">
-  <div class="video-timeline">
-    <div class="timeline-header">
-      <div class="playhead"></div>
-      <div class="timecode">00:00:00:00</div>
-    </div>
-    <div class="timeline-tracks">
-      <div class="track track-video">
-        <div class="clip clip-1"></div>
-        <div class="clip clip-2"></div>
-        <div class="clip clip-3"></div>
-      </div>
-      <div class="track track-audio">
-        <div class="clip clip-audio-1"></div>
-        <div class="clip clip-audio-2"></div>
-      </div>
-    </div>
-  </div>
   <h1 class="editor-title">WARREN MARTIN</h1>
   <div class="tagline">VIDEO EDITOR · COLORIST · STORYTELLER</div>
 </div>
