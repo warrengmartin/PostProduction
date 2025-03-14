@@ -23,25 +23,57 @@ document.addEventListener('DOMContentLoaded', function() {
     observer.observe(item);
   });
   
-  // Add click handlers to video overlays
-  document.querySelectorAll('.video-overlay').forEach(overlay => {
-    overlay.addEventListener('click', function() {
-      // Get the related iframe
-      const iframe = this.parentNode.querySelector('iframe');
-      const src = iframe.src;
-      
-      if (src.includes('youtube.com')) {
-        // Trigger YouTube play by adding autoplay parameter
-        iframe.src = src + (src.includes('?') ? '&autoplay=1' : '?autoplay=1');
-      } else if (src.includes('screenpal.com')) {
-        // For Screenpal videos
-        iframe.src = src + (src.includes('?') ? '&autoplay=1' : '?autoplay=1');
+  // Modal functionality
+  const modal = document.getElementById('video-modal');
+  const modalIframe = document.getElementById('modal-iframe');
+  const closeBtn = document.querySelector('.close-modal');
+  
+  // Click event for video items
+  document.querySelectorAll('.video-item').forEach(item => {
+    item.addEventListener('click', function() {
+      const videoSrc = this.getAttribute('data-video-src');
+      if (videoSrc) {
+        // Set the iframe source to the video URL
+        modalIframe.src = videoSrc;
+        
+        // Show the modal
+        modal.classList.add('show');
+        
+        // Prevent scrolling on the body
+        document.body.style.overflow = 'hidden';
       }
-      
-      // Hide the overlay after clicking
-      this.style.display = 'none';
     });
   });
+  
+  // Close the modal
+  closeBtn.addEventListener('click', closeModal);
+  
+  // Close on click outside content
+  modal.addEventListener('click', function(e) {
+    if (e.target === modal) {
+      closeModal();
+    }
+  });
+  
+  // Close on ESC key
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && modal.classList.contains('show')) {
+      closeModal();
+    }
+  });
+  
+  function closeModal() {
+    // Hide the modal
+    modal.classList.remove('show');
+    
+    // Stop video playback by clearing the iframe source
+    setTimeout(() => {
+      modalIframe.src = '';
+    }, 300); // Wait for animation
+    
+    // Re-enable scrolling
+    document.body.style.overflow = 'auto';
+  }
 
   // Initialize any Screenpal players if they need special handling
   function initScreenpalPlayers() {
