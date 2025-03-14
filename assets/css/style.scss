@@ -27,3 +27,51 @@
   font-size: 14px;
   color: #666;
 }
+
+/* Styling for the title and description */
+#title {
+  text-align: center;
+  margin: 20px 0;
+}
+
+#title img {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+}
+
+#title h1 {
+  font-size: 2rem;
+  margin: 10px 0;
+}
+
+#title p {
+  font-size: 1.2rem;
+  color: #666;
+}
+
+/* Adjustments for smaller screens */
+@media (max-width: 768px) {
+  #title h1 {
+    font-size: 1.5rem;
+  }
+
+  #title p {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  #title img {
+    width: 100px;
+    height: 100px;
+  }
+
+  #title h1 {
+    font-size: 1.2rem;
+  }
+
+  #title p {
+    font-size: 0.9rem;
+  }
+}
