@@ -6,6 +6,7 @@
 
     {% seo %}
     <link rel="stylesheet" href="{{ '/assets/css/style.css?v=' | append: site.github.build_revision | relative_url }}">
+    <link rel="stylesheet" href="{{ '/assets/css/shine-effect.css' | relative_url }}">
     <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
     <script src="{{ '/assets/js/respond.js' | relative_url }}"></script>
     <!--[if lt IE 9]>
@@ -54,7 +55,6 @@
     <!-- Particle.js library -->
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <!-- Your custom JS -->
-    <script src="{{ '/assets/js/fix-styles.js' | relative_url }}"></script>
     <script src="{{ '/assets/js/portfolio.js' | relative_url }}"></script>
     <script src="{{ '/assets/js/iframe-handler.js' | relative_url }}"></script>
     <script>
@@ -125,70 +125,6 @@
           }, 10);
         }
       });
-      
-      // Make sure the name styling is applied properly
-      document.addEventListener('DOMContentLoaded', function() {
-        const editorTitle = document.querySelector('.editor-title');
-        if (editorTitle) {
-          console.log("Applying special effects to editor title");
-          // Force styling with !important flags
-          editorTitle.style.cssText = `
-            font-size: 3rem !important;
-            letter-spacing: 5px !important;
-            margin-bottom: 10px !important;
-            font-family: "Courier New", monospace !important;
-            text-shadow: 0 0 10px rgba(255, 204, 0, 0.7) !important;
-            background: linear-gradient(to right, #e6b800, #ffcc00, #ffffff, #ffcc00, #e6b800) !important;
-            background-size: 200% auto !important;
-            -webkit-background-clip: text !important;
-            background-clip: text !important;
-            -webkit-text-fill-color: transparent !important;
-            animation: shine 3s linear infinite !important;
-            text-align: center !important;
-            display: block !important;
-            width: 100% !important;
-          `;
-        }
-      });
     </script>
-    
-    <style>
-      /* Emergency inline styles to ensure proper display */
-      .editor-intro {
-        display: block !important;
-        margin: 80px auto 60px !important;
-        max-width: 800px !important;
-        text-align: center !important;
-      }
-      
-      .editor-title {
-        font-size: 3rem !important;
-        letter-spacing: 5px !important;
-        margin-bottom: 10px !important;
-        font-family: "Courier New", monospace !important;
-        text-shadow: 0 0 10px rgba(255, 204, 0, 0.7) !important;
-        background: linear-gradient(to right, #e6b800, #ffcc00, #ffffff, #ffcc00, #e6b800) !important;
-        -webkit-background-clip: text !important;
-        background-clip: text !important;
-        -webkit-text-fill-color: transparent !important;
-        text-align: center !important;
-        display: block !important;
-        animation: shine 3s linear infinite !important;
-      }
-      
-      .tagline {
-        font-family: "Courier New", monospace !important;
-        letter-spacing: 2px !important;
-        color: #999 !important;
-        font-size: 1rem !important;
-        margin-bottom: 40px !important;
-        text-align: center !important;
-      }
-      
-      @keyframes shine {
-        0% { background-position: -200px; }
-        100% { background-position: 200px; }
-      }
-    </style>
   </body>
 </html>

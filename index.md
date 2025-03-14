@@ -2,9 +2,9 @@
 layout: default
 ---
 
-<div class="editor-intro">
-  <h1 class="editor-title">WARREN MARTIN</h1>
-  <div class="tagline">VIDEO EDITOR · COLORIST · STORYTELLER</div>
+<div class="editor-intro shine-container">
+  <h1 class="editor-title shine-text">WARREN MARTIN</h1>
+  <div class="tagline shine-text">VIDEO EDITOR · COLORIST · STORYTELLER</div>
 </div>
 
 <!-- Video Modal -->
