@@ -161,3 +161,287 @@
 .video-item:hover iframe {
   filter: brightness(1.1);
 }
+
+/* Film-related styling elements */
+
+/* Filmstrip at the top */
+.filmstrip-container {
+  position: relative;
+  width: 100%;
+  height: 80px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.filmstrip {
+  position: absolute;
+  width: 200%;
+  height: 80px;
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjgwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogIDxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxMDAiIGhlaWdodD0iODAiIGZpbGw9IiMxMTEiLz4KICA8cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9IiMwMDAiLz4KICA8cmVjdCB4PSI5MCIgeT0iMCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjMDAwIi8+CiAgPHJlY3QgeD0iMCIgeT0iNzAiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMCIvPgogIDxyZWN0IHg9IjkwIiB5PSI3MCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjMDAwIi8+CiAgPHJlY3QgeD0iMCIgeT0iMzUiIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iIzAwMCIvPgogIDxyZWN0IHg9IjkwIiB5PSIzNSIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjMDAwIi8+Cjwvc3ZnPg==');
+  background-repeat: repeat-x;
+  animation: filmstrip-move 30s linear infinite;
+}
+
+@keyframes filmstrip-move {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* Video Editor Timeline */
+.editor-intro {
+  margin: 50px auto;
+  max-width: 800px;
+  text-align: center;
+}
+
+.editor-title {
+  font-size: 3rem;
+  letter-spacing: 5px;
+  margin-bottom: 10px;
+  font-family: "Courier New", monospace;
+  text-shadow: 0 0 10px rgba(255, 204, 0, 0.7);
+  background: linear-gradient(to right, #e6b800, #ffcc00, #ffffff, #ffcc00, #e6b800);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shine 3s linear infinite;
+}
+
+.tagline {
+  font-family: "Courier New", monospace;
+  letter-spacing: 2px;
+  color: #999;
+  font-size: 1rem;
+  margin-bottom: 40px;
+}
+
+@keyframes shine {
+  0% { background-position: -200px; }
+  100% { background-position: 200px; }
+}
+
+/* Video Timeline Effect */
+.video-timeline {
+  width: 100%;
+  height: 150px;
+  background-color: #1a1a1a;
+  border-radius: 5px;
+  padding: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+  margin-bottom: 30px;
+  position: relative;
+}
+
+.timeline-header {
+  height: 20px;
+  background-color: #333;
+  position: relative;
+  border-radius: 3px 3px 0 0;
+  background-image: repeating-linear-gradient(to right, transparent, transparent 24px, #555 24px, #555 25px);
+}
+
+.playhead {
+  position: absolute;
+  width: 2px;
+  height: 150px;
+  background-color: #ff3300;
+  top: 0;
+  left: 100px;
+  z-index: 10;
+  animation: playhead-move 10s linear infinite;
+}
+
+.timecode {
+  position: absolute;
+  right: 10px;
+  top: 2px;
+  font-family: "Courier New", monospace;
+  color: #ddd;
+  font-size: 12px;
+  animation: timecode-change 10s linear infinite;
+}
+
+@keyframes playhead-move {
+  0% { left: 0; }
+  100% { left: calc(100% - 2px); }
+}
+
+@keyframes timecode-change {
+  0% { content: "00:00:00:00"; }
+  20% { content: "00:00:05:10"; }
+  40% { content: "00:00:10:20"; }
+  60% { content: "00:00:15:05"; }
+  80% { content: "00:00:20:15"; }
+  100% { content: "00:00:25:00"; }
+}
+
+.timeline-tracks {
+  height: 120px;
+  overflow: hidden;
+}
+
+.track {
+  height: 40px;
+  margin-bottom: 10px;
+  background-color: #222;
+  position: relative;
+  border-radius: 3px;
+}
+
+.track-video {
+  background-color: #253642;
+}
+
+.track-audio {
+  background-color: #2d3630;
+}
+
+.clip {
+  position: absolute;
+  height: 70%;
+  top: 15%;
+  border-radius: 3px;
+}
+
+.clip-1 {
+  left: 5%;
+  width: 30%;
+  background: linear-gradient(to bottom, #4a668e, #354c6d);
+  animation: pulse 3s infinite;
+}
+
+.clip-2 {
+  left: 40%;
+  width: 15%;
+  background: linear-gradient(to bottom, #7a668e, #574c6d);
+}
+
+.clip-3 {
+  left: 60%;
+  width: 35%;
+  background: linear-gradient(to bottom, #668e7a, #4c6d57);
+}
+
+.clip-audio-1 {
+  left: 5%;
+  width: 45%;
+  background: linear-gradient(to bottom, #8e7a66, #6d5c4c);
+}
+
+.clip-audio-2 {
+  left: 55%;
+  width: 40%;
+  background: linear-gradient(to bottom, #8e6666, #6d4c4c);
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 5px rgba(74, 102, 142, 0.7); }
+  50% { box-shadow: 0 0 15px rgba(74, 102, 142, 1); }
+  100% { box-shadow: 0 0 5px rgba(74, 102, 142, 0.7); }
+}
+
+/* Video overlay and play button */
+.video-container {
+  position: relative;
+}
+
+.video-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.video-container:hover .video-overlay {
+  opacity: 1;
+}
+
+.play-button {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 20px 0 20px 40px;
+  border-color: transparent transparent transparent #ffffff;
+  opacity: 0.8;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.video-container:hover .play-button {
+  transform: scale(1.1);
+  opacity: 1;
+}
+
+/* Film grain effect */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.05;
+  pointer-events: none;
+  z-index: 1000;
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc1IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGZpbHRlcj0idXJsKCNhKSIgb3BhY2l0eT0iLjA1IiBkPSJNMCAwaDMwMHYzMDBIMHoiLz48L3N2Zz4=');
+  animation: grain 1s steps(3) infinite;
+}
+
+@keyframes grain {
+  0% { transform: translate(0, 0); }
+  33.33% { transform: translate(10px, 10px); }
+  66.66% { transform: translate(-10px, -10px); }
+  100% { transform: translate(0, 0); }
+}
+
+/* Replace the standard title section styling */
+#title {
+  display: none; /* Hide the old title section */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .editor-title {
+    font-size: 2rem;
+  }
+  
+  .tagline {
+    font-size: 0.9rem;
+  }
+  
+  .video-timeline {
+    height: 100px;
+  }
+}
+
+@media (max-width: 480px) {
+  .editor-title {
+    font-size: 1.5rem;
+    letter-spacing: 3px;
+  }
+  
+  .tagline {
+    font-size: 0.7rem;
+    letter-spacing: 1px;
+  }
+  
+  .video-timeline {
+    height: 80px;
+  }
+  
+  .filmstrip-container {
+    height: 40px;
+  }
+  
+  .filmstrip {
+    height: 40px;
+    background-size: auto 40px;
+  }
+}

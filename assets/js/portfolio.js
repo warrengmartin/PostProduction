@@ -1,6 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-  // Video hover effect removed as requested
-  
   // Smooth scroll animation for navigation
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
@@ -23,5 +21,50 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelectorAll('.video-item').forEach(item => {
     item.classList.add('fade-in');
     observer.observe(item);
+  });
+  
+  // Animate timecode in the video editor timeline
+  function updateTimecode() {
+    const timecode = document.querySelector('.timecode');
+    if (!timecode) return;
+    
+    let seconds = 0;
+    let frames = 0;
+    const fps = 30;
+    
+    setInterval(() => {
+      frames++;
+      if (frames >= fps) {
+        frames = 0;
+        seconds++;
+      }
+      
+      const minutes = Math.floor(seconds / 60);
+      const remainingSeconds = seconds % 60;
+      
+      const formattedTime = 
+        `00:${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}:${frames.toString().padStart(2, '0')}`;
+      
+      timecode.textContent = formattedTime;
+    }, 1000 / fps);
+  }
+  
+  updateTimecode();
+  
+  // Add click handlers to video overlays
+  document.querySelectorAll('.video-overlay').forEach(overlay => {
+    overlay.addEventListener('click', function() {
+      // Get the related iframe
+      const iframe = this.parentNode.querySelector('iframe');
+      const src = iframe.src;
+      
+      // Trigger YouTube play by adding autoplay parameter
+      if (src.includes('youtube.com')) {
+        iframe.src = src + (src.includes('?') ? '&autoplay=1' : '?autoplay=1');
+        
+        // Hide the overlay after clicking
+        this.style.display = 'none';
+      }
+    });
   });
 });
