@@ -48,10 +48,14 @@ layout: default
 
 # Arizona State University Biodesign Center
 
-<video width="560" height="315" controls title="Arizona State University Reel">
-  <source src="assets/videos/ArizonaStateUniversity_Reel.mp4" type="video/quicktime">
-  Your browser does not support the video tag.
-</video>
+<div class="video-player-container">
+  <h3>Select ASU Reel Video File to Play:</h3>
+  <div id="message" class="video-message"></div>
+  <input type="file" accept="video/*" id="video-input" />
+  <video id="local-video" controls width="560" height="315" class="local-video-player"></video>
+</div>
+
+<!-- Remove the previous video elements that weren't working -->
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/CmL1SnQa2tI?si=GrO6QGksRgTYx6SN" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
@@ -78,3 +82,76 @@ layout: default
 <iframe width="560" height="315" src="https://www.youtube.com/embed/X7RMkY8JxD0" title="Motion Graphics Test" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 <script src="https://go.screenpal.com/player/appearance/cTe2bAn1Rkv"></script>
+
+<script>
+(function localFileVideoPlayer() {
+  'use strict'
+  var URL = window.URL || window.webkitURL
+  var displayMessage = function(message, isError) {
+    var element = document.querySelector('#message')
+    element.innerHTML = message
+    element.className = isError ? 'video-message error' : 'video-message info'
+  }
+  var playSelectedFile = function(event) {
+    var file = this.files[0]
+    var type = file.type
+    var videoNode = document.querySelector('#local-video')
+    var canPlay = videoNode.canPlayType(type)
+    if (canPlay === '') canPlay = 'no'
+    var message = 'Can play type "' + type + '": ' + canPlay
+    var isError = canPlay === 'no'
+    displayMessage(message, isError)
+
+    if (isError) {
+      return
+    }
+
+    var fileURL = URL.createObjectURL(file)
+    videoNode.src = fileURL
+  }
+  var inputNode = document.querySelector('#video-input')
+  if (inputNode) {
+    inputNode.addEventListener('change', playSelectedFile, false)
+  }
+})();
+</script>
+
+<style>
+.video-player-container {
+  margin: 20px 0;
+  padding: 15px;
+  background-color: rgba(30, 30, 30, 0.5);
+  border-radius: 10px;
+}
+
+.video-message {
+  margin: 10px 0;
+  padding: 8px;
+  border-radius: 4px;
+}
+
+.info {
+  background-color: rgba(0, 255, 255, 0.2);
+}
+
+.error {
+  background-color: rgba(255, 0, 0, 0.7);
+  color: white;
+}
+
+#video-input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  background-color: #333;
+  color: #fff;
+  border: 1px solid #555;
+  border-radius: 4px;
+}
+
+.local-video-player {
+  width: 100%;
+  background-color: #000;
+  border-radius: 5px;
+}
+</style>
