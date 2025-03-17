@@ -48,14 +48,20 @@ layout: default
 
 # Arizona State University Biodesign Center
 
-<div class="video-player-container">
-  <h3>Select ASU Reel Video File to Play:</h3>
-  <div id="message" class="video-message"></div>
-  <input type="file" accept="video/*" id="video-input" />
-  <video id="local-video" controls width="560" height="315" class="local-video-player"></video>
-</div>
+  <div class="video-player-container">
+    <h3>Arizona State University Biodesign Center Reel</h3>
+    <video id="asu-reel" controls width="560" height="315" class="local-video-player" autoplay>
+      <source src="{{ site.baseurl }}assets/videos/ArizonaStateUniversity_Reel.mp4" type="video/mp4">
+      <!-- Fallback message -->
+      Your browser does not support the video tag.
+    </video>
+  </div>
 
-<!-- Remove the previous video elements that weren't working -->
+<video width="560" height="315" controls title="Arizona State University Reel">
+  <source src="{{ site.baseurl }}assets/videos/ArizonaStateUniversity_Reel.mp4" type="video/mp4">
+  <!-- Fallback message -->
+  Your browser does not support the video tag.
+</video>
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/CmL1SnQa2tI?si=GrO6QGksRgTYx6SN" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
