@@ -54,3 +54,34 @@
     left: 100%;
   }
 }
+
+.shimmer {
+  background: linear-gradient(90deg, #000, #555, #fff, #555, #000);
+  background-size: 200% auto;
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 3s linear infinite;
+  margin-bottom: 0.2rem;
+  display: inline-block; /* Ensure the effect is applied correctly */
+}
+
+@keyframes shimmer {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+
+/* Enhancement for better visibility */
+.site-title-container {
+  margin-top: 40px;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.site-subtitle {
+  margin-top: 5px;
+  font-size: 1.2em;
+  color: #ccc;
+  letter-spacing: 2px;
+}

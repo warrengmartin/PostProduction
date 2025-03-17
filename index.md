@@ -2,9 +2,9 @@
 layout: default
 ---
 
-<div style="text-align: center;">
+<div class="site-title-container">
   <h1 class="shimmer">WARREN MARTIN</h1>
-  <div style="margin-top: -5px;">VIDEO EDITOR · COLORIST · STORYTELLER</div>
+  <div class="site-subtitle">VIDEO EDITOR · COLORIST · STORYTELLER</div>
 </div>
 
 <style>
@@ -23,7 +23,6 @@ layout: default
     100% { background-position: 200% center; }
   }
 </style>
-</div>
 
 <!-- Video Modal -->
 <div id="video-modal" class="modal">
@@ -49,9 +48,16 @@ layout: default
 
 # Arizona State University Biodesign Center
 
-<video width="560" height="315" controls title="Arizona State University Reel">
-  <source src="Video/ASU/ArizonaStateUniversity_Reel.mov" type="video/quicktime">
-  Your browser does not support the video tag.
+<video width="560" height="315" controls poster="{{ site.baseurl }}/assets/images/video-thumbnails/ASU_poster.jpg" title="Arizona State University Reel">
+  <!-- MP4 for Safari, IE9, iPhone, iPad, Android, and Windows Phone 7 -->
+  <source src="{{ site.baseurl }}/assets/videos/ArizonaStateUniversity_Reel.mp4" type="video/mp4">
+  <!-- WebM/VP8 for Firefox4, Opera, and Chrome -->
+  <source src="{{ site.baseurl }}/assets/videos/ArizonaStateUniversity_Reel.webm" type="video/webm">
+  <!-- Ogg/Theora for older Firefox and Opera versions -->
+  <source src="{{ site.baseurl }}/assets/videos/ArizonaStateUniversity_Reel.ogv" type="video/ogg">
+  <!-- Original MOV source -->
+  <source src="{{ site.baseurl }}/assets/videos/ArizonaStateUniversity_Reel.mov" type="video/quicktime">
+  <p>Your browser doesn't support HTML5 video. Here is a <a href="{{ site.baseurl }}/assets/videos/ArizonaStateUniversity_Reel.mp4">link to the video</a> instead.</p>
 </video>
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/CmL1SnQa2tI?si=GrO6QGksRgTYx6SN" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
