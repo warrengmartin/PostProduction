@@ -48,14 +48,10 @@ layout: default
 
 # Arizona State University Biodesign Center
 
-  <div class="video-player-container">
-    <h3>Arizona State University Biodesign Center Reel</h3>
-    <video id="asu-reel" controls width="560" height="315" class="local-video-player" autoplay>
-      <source src="{{ site.baseurl }}assets/videos/ArizonaStateUniversity_Reel.mp4" type="video/mp4">
-      <!-- Fallback message -->
-      Your browser does not support the video tag.
-    </video>
-  </div>
+<video width="1280" height="720" controls autoplay muted loop>
+<source src="https://github.com/warrengmartin/PostProduction/blob/master/assets/videos/ArizonaStateUniversity_Reel.mp4" type="video/mp4">
+ Your browser does not support the video tag.
+</video>
 
 <video width="560" height="315" controls title="Arizona State University Reel">
   <source src="{{ site.baseurl }}assets/videos/ArizonaStateUniversity_Reel.mp4" type="video/mp4">
