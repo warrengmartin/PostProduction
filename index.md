@@ -2,7 +2,7 @@
 layout: default
 ---
 
-<div class="editor-intro shine-container">
+<div class="editor-intro shine-container" style="text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%;">
   <h1 class="editor-title shine-text">WARREN MARTIN</h1>
   <div class="tagline shine-text">VIDEO EDITOR · COLORIST · STORYTELLER</div>
 </div>
