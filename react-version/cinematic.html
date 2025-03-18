@@ -132,6 +132,8 @@
 
         .section:not(.active) {
             opacity: 0.7;
+            will-change: opacity;
+            transform: translateZ(0);
         }
 
         /* Video gallery grid layout */
@@ -147,6 +149,7 @@
             grid-template-columns: repeat(auto-fill, minmax(560px, 1fr));
             gap: 30px;
             justify-content: center;
+            will-change: transform, opacity;
         }
 
         .video-showcase.visible {
@@ -172,6 +175,7 @@
             background: #000;
             max-width: 560px;
             justify-self: center;
+            will-change: transform, opacity;
         }
 
         .video-container:hover {
@@ -281,11 +285,11 @@
         @keyframes fadeInUp {
             from {
                 opacity: 0;
-                transform: translateY(20px);
+                transform: translate3d(0, 20px, 0);
             }
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translate3d(0, 0, 0);
                 will-change: auto;
             }
         }
@@ -485,10 +489,26 @@
             ]
         };
 
+        // Throttle function to limit function calls
+        function throttle(func, limit) {
+            let inThrottle;
+            return function() {
+                const args = arguments;
+                const context = this;
+                if (!inThrottle) {
+                    func.apply(context, args);
+                    inThrottle = true;
+                    setTimeout(() => inThrottle = false, limit);
+                }
+            };
+        }
+
         const App = () => {
             const [activeSection, setActiveSection] = React.useState(0);
             const [scrollProgress, setScrollProgress] = React.useState(0);
-
+            const [videoVisibility, setVideoVisibility] = React.useState({});
+            const sectionRefs = React.useRef([]);
+            
             const sections = [
                 { id: 'hero', title: 'Introduction' },
                 { id: 'narrative', title: 'Narrative', videos: videoData.promos },
@@ -499,6 +519,21 @@
                 { id: 'school', title: 'School', videos: videoData.school }
             ];
 
+            // Memoize the calculation of active section
+            const calculateActiveSection = React.useCallback(() => {
+                const currentPosition = window.scrollY + window.innerHeight / 2;
+                
+                for (let i = 0; i < sectionRefs.current.length; i++) {
+                    const section = sectionRefs.current[i];
+                    if (section && section.offsetTop <= currentPosition && 
+                        section.offsetTop + section.offsetHeight > currentPosition) {
+                        setActiveSection(i);
+                        break;
+                    }
+                }
+            }, []);
+
+            // Optimize scroll handler with throttling
             React.useEffect(() => {
                 // Remove loader after content is ready
                 const loader = document.querySelector('.loader');
@@ -506,49 +541,100 @@
                     loader.classList.add('fade-out');
                 }, 1000);
 
-                // Initialize scroll handling
-                const handleScroll = () => {
-                    const progress = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
-                    setScrollProgress(progress);
-
-                    // Update active section based on scroll position
-                    const currentPosition = window.scrollY + window.innerHeight / 2;
-                    const sectionElements = document.querySelectorAll('.section');
-                    sectionElements.forEach((section, index) => {
-                        if (section.offsetTop <= currentPosition && 
-                            section.offsetTop + section.offsetHeight > currentPosition) {
-                            setActiveSection(index);
-                        }
+                // Initialize scroll handling with throttling
+                const handleScroll = throttle(() => {
+                    // Use requestAnimationFrame for smooth performance
+                    window.requestAnimationFrame(() => {
+                        const progress = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+                        setScrollProgress(progress);
+                        calculateActiveSection();
                     });
-                };
+                }, 100);
 
-                window.addEventListener('scroll', handleScroll);
+                window.addEventListener('scroll', handleScroll, { passive: true });
+                
+                // Collect section refs
+                sectionRefs.current = sections.map(section => document.getElementById(section.id));
+                
                 return () => window.removeEventListener('scroll', handleScroll);
-            }, []);
+            }, [calculateActiveSection, sections]);
 
-            // Add intersection observer for videos
+            // Use Intersection Observer for lazy loading videos
             React.useEffect(() => {
                 const options = {
                     root: null,
-                    rootMargin: '50px',
+                    rootMargin: '100px',
                     threshold: 0.1
                 };
 
                 const observer = new IntersectionObserver((entries) => {
+                    const newVisibility = {...videoVisibility};
+                    
                     entries.forEach(entry => {
                         if (entry.isIntersecting) {
                             entry.target.classList.add('visible');
-                            observer.unobserve(entry.target);
+                            // Set this video as visible to load it
+                            const videoId = entry.target.dataset.videoId;
+                            if (videoId) {
+                                newVisibility[videoId] = true;
+                            }
                         }
                     });
+                    
+                    setVideoVisibility(newVisibility);
                 }, options);
 
+                // Observe both showcase containers and individual video containers
                 document.querySelectorAll('.video-container').forEach(container => {
                     observer.observe(container);
                 });
+                
+                document.querySelectorAll('.video-showcase').forEach(showcase => {
+                    observer.observe(showcase);
+                });
 
                 return () => observer.disconnect();
-            }, []);
+            }, [videoVisibility]);
+
+            // Memoize the render of videos to prevent unnecessary re-renders
+            const renderVideos = React.useCallback((videos) => {
+                if (!videos || videos.length === 0) {
+                    return (
+                        <div style={{ textAlign: 'center', gridColumn: '1 / -1', padding: '50px 0', opacity: 0.5 }}>
+                            No videos in this section
+                        </div>
+                    );
+                }
+                
+                return videos.map(video => (
+                    <div key={video.id} className="video-container" data-video-id={video.id}>
+                        {videoVisibility[video.id] ? (
+                            <iframe
+                                src={video.src}
+                                title={video.title}
+                                width="560"
+                                height="315"
+                                loading="lazy"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowFullScreen
+                            />
+                        ) : (
+                            <div className="video-placeholder" 
+                                 style={{
+                                     width: '100%', 
+                                     height: '100%', 
+                                     backgroundColor: '#111',
+                                     position: 'absolute',
+                                     display: 'flex',
+                                     alignItems: 'center',
+                                     justifyContent: 'center'
+                                 }}>
+                                <div style={{color: '#666'}}>Loading video...</div>
+                            </div>
+                        )}
+                    </div>
+                ));
+            }, [videoVisibility]);
 
             return (
                 <>
@@ -577,6 +663,7 @@
                                 src="../assets/images/1551457847892.png" 
                                 alt="Warren Martin"
                                 className="profile-image"
+                                loading="eager"
                             />
                             <h1 className="dynamic-text">WARREN MARTIN</h1>
                             <p style={{ 
@@ -594,24 +681,7 @@
                         <section key={section.id} id={section.id} className="section">
                             <div className="category-label">{section.title}</div>
                             <div className="video-showcase">
-                                {section.videos?.length > 0 ? (
-                                    section.videos.map(video => (
-                                        <div key={video.id} className="video-container">
-                                            <iframe
-                                                src={video.src}
-                                                title={video.title}
-                                                width="560"
-                                                height="315"
-                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                                allowFullScreen
-                                            />
-                                        </div>
-                                    ))
-                                ) : (
-                                    <div style={{ textAlign: 'center', gridColumn: '1 / -1', padding: '50px 0', opacity: 0.5 }}>
-                                        No videos in this section
-                                    </div>
-                                )}
+                                {renderVideos(section.videos)}
                             </div>
                         </section>
                     ))}
@@ -619,48 +689,12 @@
             );
         };
 
-        ReactDOM.render(<App />, document.getElementById('root'));
+        // Memo-wrapped component to prevent unnecessary renders
+        const MemoizedApp = React.memo(App);
 
-        // Intersection Observer for video showcase animations
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                    }
-                });
-            },
-            { threshold: 0.1 }
-        );
-
-        document.querySelectorAll('.video-showcase').forEach(showcase => {
-            observer.observe(showcase);
-        });
-
-        // Optimized intersection observer
-        const createObserver = (selector, callback, options = {}) => {
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => callback(entry));
-            }, { threshold: 0.1, ...options });
-
-            document.querySelectorAll(selector).forEach(element => {
-                observer.observe(element);
-            });
-
-            return observer;
-        };
-
-        // Performance optimization for scroll events
-        let ticking = false;
-        window.addEventListener('scroll', () => {
-            if (!ticking) {
-                window.requestAnimationFrame(() => {
-                    // Update scroll-based animations
-                    ticking = false;
-                });
-                ticking = true;
-            }
-        });
+        ReactDOM.render(<MemoizedApp />, document.getElementById('root'));
+        
+        // Remove redundant observers since we're handling everything in the React component
     </script>
 </body>
 </html>
