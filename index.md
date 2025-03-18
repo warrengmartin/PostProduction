@@ -106,7 +106,7 @@ layout: default
   <img src="assets/images/1551457847892.png" alt="Warren Martin" class="profile-image">
 </div>
 
-<div class="site-title-container">
+<div>
   <h1 class="shimmer">WARREN MARTIN</h1>
   <div class="site-subtitle">VIDEO EDITOR · COLORIST · STORYTELLER</div>
 </div>
