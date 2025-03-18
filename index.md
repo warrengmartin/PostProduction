@@ -1,9 +1,64 @@
 ---
 layout: default
 ---
-<div style="text-align: center; margin-bottom: 20px;">
-  <img src="assets/images/1551457847892.png" alt="Warren Martin" style="max-width: 100%; height: auto; border-radius: 5px;">
+<style>
+  .profile-image-container {
+    position: relative;
+    text-align: center;
+    margin-bottom: 30px;
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .profile-image {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    transition: all 0.5s ease;
+    filter: brightness(1);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+    border: 8px solid #1a1a1a;
+    box-sizing: border-box;
+  }
+  
+  .profile-image-container:hover .profile-image {
+    transform: scale(1.03);
+    filter: brightness(1.2);
+    box-shadow: 0 15px 30px rgba(255, 204, 0, 0.4);
+  }
+  
+  .profile-image-container::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    border-radius: 15px;
+    background: linear-gradient(45deg, #ffcc00, transparent, #ffcc00, transparent);
+    background-size: 400% 400%;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    animation: gradientBG 5s ease infinite;
+  }
+  
+  .profile-image-container:hover::before {
+    opacity: 0.7;
+  }
+  
+  @keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+</style>
+
+<div class="profile-image-container">
+  <img src="assets/images/1551457847892.png" alt="Warren Martin" class="profile-image">
 </div>
+
 <div class="site-title-container">
   <div style="text-align: center;">
     <h1 class="shimmer">WARREN MARTIN</h1>
