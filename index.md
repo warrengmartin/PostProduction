@@ -1,10 +1,14 @@
 ---
 layout: default
 ---
-
+<div style="text-align: center; margin-bottom: 20px;">
+  <img src="assets/images/1551457847892.png" alt="Warren Martin" style="max-width: 100%; height: auto; border-radius: 5px;">
+</div>
 <div class="site-title-container">
-  <h1 class="shimmer">WARREN MARTIN</h1>
-  <div class="site-subtitle">VIDEO EDITOR · COLORIST · STORYTELLER</div>
+  <div style="text-align: center;">
+    <h1 class="shimmer">WARREN MARTIN</h1>
+    <div class="site-subtitle">VIDEO EDITOR · COLORIST · STORYTELLER</div>
+  </div>
 </div>
 
 
