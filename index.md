@@ -106,8 +106,14 @@ layout: default
   <img src="assets/images/1551457847892.png" alt="Warren Martin" class="profile-image">
 </div>
 <div style="text-align: center; margin-top: 20px;">
-  <a href="TESTING.html" style="color: #ffcc00; text-decoration: none; font-size: 1.2rem; font-weight: bold;">
-    Go to TESTING Page
+  <a href="TESTING.html" style="color: #ffcc00; text-decoration: none; font-size: 1.2rem; font-weight: bold; margin: 0 10px;">
+    Test Version
+  </a>
+  <a href="react-version/index.html" style="color: #ffcc00; text-decoration: none; font-size: 1.2rem; font-weight: bold; margin: 0 10px;">
+    React Version
+  </a>
+  <a href="react-version/cinematic.html" style="color: #ffcc00; text-decoration: none; font-size: 1.2rem; font-weight: bold; margin: 0 10px;">
+    Cinematic Version
   </a>
 </div>
 <div>

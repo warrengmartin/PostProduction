@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warren Martin - React Portfolio</title>
+    <!-- React and ReactDOM from CDN -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Particles.js -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <style>
+        /* Base styles */
+        body {
+            padding: 0;
+            margin: 0;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            color: #f0e7d5;
+            font-weight: normal;
+            background: #252525;
+            background: linear-gradient(#2a2a29, #1c1c1c);
+            background-attachment: fixed !important;
+        }
+
+        #root {
+            max-width: 650px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Profile image */
+        .profile-image-container {
+            position: relative;
+            text-align: center;
+            margin: 0 auto 30px;
+            max-width: 300px;
+        }
+
+        .profile-image {
+            width: 100%;
+            border-radius: 10px;
+            transition: all 0.5s ease;
+            filter: brightness(1);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            border: 8px solid #1a1a1a;
+            box-sizing: border-box;
+        }
+
+        .profile-image-container:hover .profile-image {
+            transform: scale(1.03);
+            filter: brightness(1.2);
+            box-shadow: 0 15px 30px rgba(255, 204, 0, 0.4);
+        }
+
+        .profile-image-container::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            border-radius: 15px;
+            background: linear-gradient(45deg, #ffcc00, transparent, #ffcc00, transparent);
+            background-size: 400% 400%;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            animation: gradientBG 5s ease infinite;
+        }
+
+        .profile-image-container:hover::before {
+            opacity: 0.7;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Title */
+        .title-container {
+            width: 100%;
+            text-align: center;
+            margin: 40px auto;
+        }
+
+        .shimmer {
+            display: inline-block;
+            font-size: 3.5rem;
+            font-weight: 900;
+            background-image: linear-gradient(
+                -45deg,
+                #ffcc00 0%,
+                #ffffff 25%,
+                #ffcc00 50%,
+                #ffffff 75%,
+                #ffcc00 100%
+            );
+            background-size: 200% auto;
+            color: transparent;
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 3s linear infinite;
+            margin: 0;
+            font-family: "Arial Black", "Helvetica Bold", sans-serif;
+            letter-spacing: 4px;
+        }
+
+        @keyframes shimmer {
+            to { background-position: 200% center; }
+        }
+
+        .subtitle {
+            margin-top: 10px;
+            font-size: 1.2rem;
+            color: #ccc;
+            letter-spacing: 2px;
+        }
+
+        /* Section headings */
+        .section-title {
+            font-size: 2.2rem;
+            font-family: "Courier New", monospace;
+            text-align: left;
+            color: #ffcc00;
+            margin: 60px 0 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 204, 0, 0.3);
+            text-shadow: 0 0 5px rgba(255, 204, 0, 0.3);
+        }
+
+        /* Videos */
+        .video-section {
+            margin-bottom: 40px;
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            height: 0;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 5px;
+        }
+
+        /* Navigation */
+        .navigation {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            flex-wrap: wrap;
+        }
+
+        .nav-item {
+            padding: 8px 15px;
+            margin: 5px;
+            color: #ffcc00;
+            cursor: pointer;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background-color: rgba(255, 204, 0, 0.2);
+            box-shadow: 0 0 10px rgba(255, 204, 0, 0.3);
+        }
+
+        /* Back button */
+        .back-button {
+            display: inline-block;
+            padding: 8px 16px;
+            background-color: rgba(255, 204, 0, 0.2);
+            color: #ffcc00;
+            border: 1px solid #ffcc00;
+            border-radius: 4px;
+            margin: 20px 0;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .back-button:hover {
+            background-color: rgba(255, 204, 0, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Particles background */
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        /* Film grain effect */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.05;
+            pointer-events: none;
+            z-index: 1000;
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc1IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGZpbHRlcj0idXJsKCNhKSIgb3BhY2l0eT0iLjA1IiBkPSJNMCAwaDMwMHYzMDBIMHoiLz48L3N2Zz4=');
+            animation: grain 1s steps(3) infinite;
+        }
+
+        @keyframes grain {
+            0% { transform: translate(0, 0); }
+            33.33% { transform: translate(10px, 10px); }
+            66.66% { transform: translate(-10px, -10px); }
+            100% { transform: translate(0, 0); }
+        }
+
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .shimmer {
+                font-size: 2.5rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+                margin: 50px 0 25px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .shimmer {
+                font-size: 2rem;
+                letter-spacing: 3px;
+            }
+            
+            .subtitle {
+                font-size: 0.8rem;
+                letter-spacing: 1px;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+                margin: 40px 0 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="particles-js"></div>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        // Define video data
+        const videoData = {
+            promos: [
+                {
+                    id: 'promo1',
+                    src: 'https://player.vimeo.com/video/95359623?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479',
+                    title: 'Star Crossed Killers'
+                },
+                {
+                    id: 'promo2',
+                    src: 'https://www.youtube.com/embed/CiebEcI2dSQ?si=NUUkMN3Z8HfsiEA5',
+                    title: 'YouTube Promo Video'
+                },
+                {
+                    id: 'promo3',
+                    src: 'https://www.youtube.com/embed/4ZLRbQ41imI?si=Bs-OAPKU4fI-9gLX',
+                    title: 'Movie Trailer'
+                }
+            ],
+            biodesign: [
+                {
+                    id: 'bio1',
+                    src: 'https://www.youtube.com/embed/CmL1SnQa2tI?si=GrO6QGksRgTYx6SN',
+                    title: 'ASU Biodesign Center'
+                },
+                {
+                    id: 'bio2',
+                    src: 'https://www.youtube.com/embed/FW6MXqzeg7M?si=rdInD-yaGF7BMQuL',
+                    title: 'ASU Research'
+                }
+            ],
+            documentary: [
+                {
+                    id: 'doc1',
+                    src: 'https://www.youtube.com/embed/Kf2PoQKTI9Y?si=RXcA9l7335nj9DKF',
+                    title: 'Documentary Sample'
+                }
+            ],
+            events: [
+                {
+                    id: 'event1',
+                    src: 'https://player.vimeo.com/video/168191701?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479',
+                    title: 'Wedding Highlights'
+                },
+                {
+                    id: 'event2',
+                    src: 'https://player.vimeo.com/video/167626373?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479',
+                    title: 'Event Sample'
+                }
+            ]
+        };
+
+        // Video component
+        const Video = ({ src, title }) => (
+            <div className="video-container">
+                <iframe 
+                    src={src} 
+                    title={title}
+                    frameBorder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowFullScreen>
+                </iframe>
+            </div>
+        );
+
+        // Main App component
+        const App = () => {
+            const [activeSection, setActiveSection] = React.useState('promos');
+            
+            React.useEffect(() => {
+                // Initialize particles.js
+                if (window.particlesJS) {
+                    window.particlesJS('particles-js', {
+                        particles: {
+                            number: {
+                                value: 50,
+                                density: {
+                                    enable: true,
+                                    value_area: 800
+                                }
+                            },
+                            color: {
+                                value: "#ffffff"
+                            },
+                            opacity: {
+                                value: 0.1,
+                                random: false
+                            },
+                            size: {
+                                value: 3,
+                                random: true
+                            },
+                            line_linked: {
+                                enable: true,
+                                distance: 150,
+                                color: "#ffffff",
+                                opacity: 0.1,
+                                width: 1
+                            },
+                            move: {
+                                enable: true,
+                                speed: 2,
+                                direction: "none",
+                                random: false,
+                                straight: false,
+                                out_mode: "out",
+                                bounce: false
+                            }
+                        },
+                        interactivity: {
+                            detect_on: "canvas",
+                            events: {
+                                onhover: {
+                                    enable: true,
+                                    mode: "grab"
+                                },
+                                onclick: {
+                                    enable: true,
+                                    mode: "push"
+                                },
+                                resize: true
+                            }
+                        },
+                        retina_detect: true
+                    });
+                }
+            }, []);
+
+            const navItems = [
+                { id: 'promos', title: 'Promos/Reel' },
+                { id: 'biodesign', title: 'ASU Biodesign' },
+                { id: 'documentary', title: 'Documentary' },
+                { id: 'events', title: 'Events' }
+            ];
+
+            return (
+                <>
+                    <a href="../index.html" className="back-button">← Back to Main Site</a>
+                    
+                    <div className="profile-image-container">
+                        <img src="../assets/images/1551457847892.png" alt="Warren Martin" className="profile-image" />
+                    </div>
+                    
+                    <div className="title-container">
+                        <h1 className="shimmer">WARREN MARTIN</h1>
+                        <p className="subtitle">VIDEO EDITOR · COLORIST · STORYTELLER</p>
+                    </div>
+                    
+                    <div className="navigation">
+                        {navItems.map(item => (
+                            <div 
+                                key={item.id}
+                                className={`nav-item ${activeSection === item.id ? 'active' : ''}`}
+                                onClick={() => setActiveSection(item.id)}
+                            >
+                                {item.title}
+                            </div>
+                        ))}
+                    </div>
+                    
+                    <div className="video-section">
+                        <h2 className="section-title">{navItems.find(item => item.id === activeSection).title}</h2>
+                        
+                        {videoData[activeSection].map(video => (
+                            <Video key={video.id} src={video.src} title={video.title} />
+                        ))}
+                    </div>
+                </>
+            );
+        };
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
