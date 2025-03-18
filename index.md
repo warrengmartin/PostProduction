@@ -53,6 +53,53 @@ layout: default
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
   }
+  
+  /* Fixed shimmer effect */
+  .shimmer {
+    display: inline-block;
+    font-size: 3rem;
+    font-weight: 700;
+    background-image: linear-gradient(
+      -45deg, 
+      rgba(255, 204, 0, 1) 0%, 
+      rgba(255, 255, 255, 1) 25%, 
+      rgba(255, 204, 0, 1) 50%, 
+      rgba(255, 255, 255, 1) 75%, 
+      rgba(255, 204, 0, 1) 100%
+    );
+    background-size: 200% auto;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-fill-color: transparent;
+    animation: shine 3s linear infinite;
+    width: 100%;
+    text-align: center; 
+    letter-spacing: 4px;
+    margin: 0 auto;
+  }
+
+  @keyframes shine {
+    to {
+      background-position: 200% center;
+    }
+  }
+  
+  /* Fixed title container */
+  .site-title-container {
+    width: 100%;
+    display: block;
+    text-align: center;
+    margin: 40px auto;
+  }
+  
+  .site-subtitle {
+    margin-top: 10px;
+    font-size: 1.2rem;
+    color: #ccc;
+    letter-spacing: 2px;
+    text-align: center;
+  }
 </style>
 
 <div class="profile-image-container">
@@ -60,10 +107,8 @@ layout: default
 </div>
 
 <div class="site-title-container">
-  <div style="text-align: center;">
-    <h1 class="shimmer">WARREN MARTIN</h1>
-    <div class="site-subtitle">VIDEO EDITOR · COLORIST · STORYTELLER</div>
-  </div>
+  <h1 class="shimmer">WARREN MARTIN</h1>
+  <div class="site-subtitle">VIDEO EDITOR · COLORIST · STORYTELLER</div>
 </div>
 
 
