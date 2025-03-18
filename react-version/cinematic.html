@@ -19,6 +19,31 @@
             overflow-x: hidden;
         }
 
+        /* Smooth scrolling for the whole page */
+        html {
+            scroll-behavior: smooth;
+            height: 100%;
+        }
+
+        body {
+            height: 100%;
+            background: linear-gradient(to bottom, #000, #111);
+        }
+
+        /* Fixed background overlay */
+        .background-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(255, 204, 0, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.03) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
         /* Hero section */
         .hero {
             height: 100vh;
@@ -28,6 +53,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            background: radial-gradient(circle at center, rgba(26, 26, 26, 0.8) 0%, rgba(0, 0, 0, 0.95) 100%);
         }
 
         .hero-background {
@@ -38,6 +64,18 @@
             height: 100%;
             background: radial-gradient(circle at center, #1a1a1a 0%, #000 100%);
             z-index: 1;
+        }
+
+        .hero-background::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(255, 204, 0, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
         }
 
         .hero-content {
@@ -57,31 +95,58 @@
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-fill-color: transparent;
             margin: 0;
             line-height: 1;
             letter-spacing: -0.02em;
         }
 
+        /* Profile image styling */
+        .profile-image {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            margin-bottom: 2rem;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 30px rgba(255, 204, 0, 0.2);
+            transition: all 0.5s ease;
+        }
+
+        .profile-image:hover {
+            transform: scale(1.05);
+            border-color: rgba(255, 204, 0, 0.3);
+            box-shadow: 0 0 40px rgba(255, 204, 0, 0.3);
+        }
+
         /* Section styles */
         .section {
-            min-height: 100vh;
+            min-height: auto;
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
-            padding: 100px 0;
+            padding: 120px 0;
             overflow: hidden;
+            transition: opacity 0.5s ease;
+            will-change: opacity;
         }
 
+        .section:not(.active) {
+            opacity: 0.7;
+        }
+
+        /* Video gallery grid layout */
         .video-showcase {
             width: 100%;
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 0 40px;
             opacity: 0;
             transform: translateY(40px);
             transition: all 1s ease;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(560px, 1fr));
+            gap: 30px;
+            justify-content: center;
         }
 
         .video-showcase.visible {
@@ -89,23 +154,34 @@
             transform: translateY(0);
         }
 
-        /* Video container with Apple-style floating effect */
+        /* Video container with consistent dimensions */
         .video-container {
             position: relative;
             width: 100%;
-            padding-bottom: 56.25%;
-            margin: 100px 0;
-            border-radius: 20px;
+            height: 0;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            margin: 0;
+            border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
             transform-style: preserve-3d;
             transform: perspective(1000px);
             transition: all 0.5s ease;
+            opacity: 0;
+            transform: translateY(30px);
+            background: #000;
+            max-width: 560px;
+            justify-self: center;
         }
 
         .video-container:hover {
             transform: perspective(1000px) translateY(-10px) rotateX(2deg);
             box-shadow: 0 40px 70px rgba(0,0,0,0.5);
+        }
+
+        .video-container.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .video-container iframe {
@@ -115,6 +191,26 @@
             width: 100%;
             height: 100%;
             border: none;
+        }
+
+        /* Lazy loading wrapper */
+        .lazy-video-wrapper {
+            position: relative;
+            background: rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+        }
+
+        .lazy-video-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transition: all 0.3s ease;
         }
 
         /* Navigation dots */
@@ -127,6 +223,10 @@
             display: flex;
             flex-direction: column;
             gap: 20px;
+            backdrop-filter: blur(5px);
+            padding: 10px 5px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
         }
 
         .nav-dot {
@@ -179,20 +279,96 @@
         }
 
         @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
             to {
                 opacity: 1;
                 transform: translateY(0);
+                will-change: auto;
             }
         }
 
+        /* Loading animation */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: opacity 0.5s ease;
+        }
+
+        .loader.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loader::after {
+            content: '';
+            width: 40px;
+            height: 40px;
+            border: 2px solid #333;
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Back button */
+        .back-link {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 14px;
+            letter-spacing: 1px;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+        }
+
+        .back-link:hover {
+            opacity: 1;
+        }
+
+        /* Scroll-based parallax effect */
+        .parallax-wrapper {
+            position: relative;
+            will-change: transform;
+            transform-style: preserve-3d;
+        }
+
         /* Responsive design */
+        @media (max-width: 1200px) {
+            .video-showcase {
+                grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+            }
+        }
+
         @media (max-width: 768px) {
             .dynamic-text {
                 font-size: 12vw;
             }
             
             .video-showcase {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
                 padding: 0 20px;
+                gap: 20px;
+            }
+            
+            .video-container {
+                box-shadow: 0 10px 25px rgba(0,0,0,0.3);
             }
             
             .nav-dots {
@@ -203,13 +379,112 @@
                 left: 20px;
                 font-size: 12px;
             }
+
+            .video-container {
+                margin: 50px 0;
+            }
+
+            .nav-dots {
+                right: 10px;
+            }
+
+            .category-label {
+                font-size: 12px;
+                left: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .video-showcase {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
+    <div class="background-overlay"></div>
+    <div class="loader"></div>
+    <a href="../index.html" class="back-link">← Back to Main Site</a>
     <div id="root"></div>
 
     <script type="text/babel">
+        // Video data configuration
+        const videoData = {
+            promos: [
+                {
+                    id: 'promo1',
+                    src: 'https://player.vimeo.com/video/95359623?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479',
+                    title: 'Star Crossed Killers'
+                },
+                {
+                    id: 'promo2',
+                    src: 'https://www.youtube.com/embed/CiebEcI2dSQ?si=NUUkMN3Z8HfsiEA5',
+                    title: 'YouTube Promo Video'
+                },
+                {
+                    id: 'promo3',
+                    src: 'https://www.youtube.com/embed/4ZLRbQ41imI?si=Bs-OAPKU4fI-9gLX',
+                    title: 'Movie Trailer'
+                },
+                {
+                    id: 'promo4',
+                    src: 'https://www.youtube.com/embed/GTS9sd-aYD0?si=qzr0SXej5W8clAxH',
+                    title: 'YouTube Promo Video 2'
+                }
+            ],
+            shortFilms: [
+                // Empty category as placeholder - can be filled later
+            ],
+            biodesign: [
+                {
+                    id: 'bio1',
+                    src: 'https://www.youtube.com/embed/CmL1SnQa2tI?si=GrO6QGksRgTYx6SN',
+                    title: 'ASU Biodesign Center'
+                },
+                {
+                    id: 'bio2',
+                    src: 'https://www.youtube.com/embed/FW6MXqzeg7M?si=rdInD-yaGF7BMQuL',
+                    title: 'ASU Research'
+                },
+                {
+                    id: 'bio3',
+                    src: 'https://www.youtube.com/embed/T3nPgcY3Sfo?si=sEtPbfQjg-9mB1WP',
+                    title: 'ASU Biodesign 2'
+                }
+            ],
+            documentary: [
+                {
+                    id: 'doc1',
+                    src: 'https://www.youtube.com/embed/Kf2PoQKTI9Y?si=RXcA9l7335nj9DKF',
+                    title: 'Documentary Sample'
+                }
+            ],
+            events: [
+                {
+                    id: 'event1',
+                    src: 'https://player.vimeo.com/video/168191701?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479',
+                    title: 'Wedding Highlights'
+                },
+                {
+                    id: 'event2',
+                    src: 'https://player.vimeo.com/video/167626373?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479',
+                    title: 'Event Sample'
+                }
+            ],
+            school: [
+                {
+                    id: 'school1',
+                    src: 'https://www.youtube.com/embed/9TYfcyvSpJQ',
+                    title: 'Student Film Project'
+                },
+                {
+                    id: 'school2',
+                    src: 'https://www.youtube.com/embed/HXqaLyylPsE',
+                    title: 'Campus Documentary'
+                }
+            ]
+        };
+
         const App = () => {
             const [activeSection, setActiveSection] = React.useState(0);
             const [scrollProgress, setScrollProgress] = React.useState(0);
@@ -217,11 +492,21 @@
             const sections = [
                 { id: 'hero', title: 'Introduction' },
                 { id: 'narrative', title: 'Narrative', videos: videoData.promos },
+                { id: 'shortFilms', title: 'Short Films', videos: videoData.shortFilms },
+                { id: 'biodesign', title: 'ASU Biodesign', videos: videoData.biodesign },
                 { id: 'documentary', title: 'Documentary', videos: videoData.documentary },
-                { id: 'commercial', title: 'Commercial', videos: videoData.biodesign }
+                { id: 'events', title: 'Events', videos: videoData.events },
+                { id: 'school', title: 'School', videos: videoData.school }
             ];
 
             React.useEffect(() => {
+                // Remove loader after content is ready
+                const loader = document.querySelector('.loader');
+                setTimeout(() => {
+                    loader.classList.add('fade-out');
+                }, 1000);
+
+                // Initialize scroll handling
                 const handleScroll = () => {
                     const progress = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
                     setScrollProgress(progress);
@@ -239,6 +524,30 @@
 
                 window.addEventListener('scroll', handleScroll);
                 return () => window.removeEventListener('scroll', handleScroll);
+            }, []);
+
+            // Add intersection observer for videos
+            React.useEffect(() => {
+                const options = {
+                    root: null,
+                    rootMargin: '50px',
+                    threshold: 0.1
+                };
+
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('visible');
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, options);
+
+                document.querySelectorAll('.video-container').forEach(container => {
+                    observer.observe(container);
+                });
+
+                return () => observer.disconnect();
             }, []);
 
             return (
@@ -264,6 +573,11 @@
                     <section id="hero" className="hero section">
                         <div className="hero-background" />
                         <div className="hero-content">
+                            <img 
+                                src="../assets/images/1551457847892.png" 
+                                alt="Warren Martin"
+                                className="profile-image"
+                            />
                             <h1 className="dynamic-text">WARREN MARTIN</h1>
                             <p style={{ 
                                 fontSize: '1.5rem', 
@@ -280,16 +594,24 @@
                         <section key={section.id} id={section.id} className="section">
                             <div className="category-label">{section.title}</div>
                             <div className="video-showcase">
-                                {section.videos?.map(video => (
-                                    <div key={video.id} className="video-container">
-                                        <iframe
-                                            src={video.src}
-                                            title={video.title}
-                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                            allowFullScreen
-                                        />
+                                {section.videos?.length > 0 ? (
+                                    section.videos.map(video => (
+                                        <div key={video.id} className="video-container">
+                                            <iframe
+                                                src={video.src}
+                                                title={video.title}
+                                                width="560"
+                                                height="315"
+                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                allowFullScreen
+                                            />
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div style={{ textAlign: 'center', gridColumn: '1 / -1', padding: '50px 0', opacity: 0.5 }}>
+                                        No videos in this section
                                     </div>
-                                ))}
+                                )}
                             </div>
                         </section>
                     ))}
@@ -313,6 +635,31 @@
 
         document.querySelectorAll('.video-showcase').forEach(showcase => {
             observer.observe(showcase);
+        });
+
+        // Optimized intersection observer
+        const createObserver = (selector, callback, options = {}) => {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => callback(entry));
+            }, { threshold: 0.1, ...options });
+
+            document.querySelectorAll(selector).forEach(element => {
+                observer.observe(element);
+            });
+
+            return observer;
+        };
+
+        // Performance optimization for scroll events
+        let ticking = false;
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    // Update scroll-based animations
+                    ticking = false;
+                });
+                ticking = true;
+            }
         });
     </script>
 </body>
