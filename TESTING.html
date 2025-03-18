@@ -3,62 +3,405 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sample Page</title>
+    <title>Warren Martin - Video Portfolio (Test Version)</title>
     <style>
+        /* Base styles from jekyll-theme-midnight */
         body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f9;
-            color: #333;
+            padding: 0px 0 20px 0px;
+            margin: 0px;
+            font: 14px/1.5 "OpenSansRegular", "Helvetica Neue", Helvetica, Arial, sans-serif;
+            color: #f0e7d5;
+            font-weight: normal;
+            background: #252525;
+            background-attachment: fixed !important;
+            background: linear-gradient(#2a2a29, #1c1c1c);
         }
 
-        header {
-            background-color: #4CAF50;
-            color: white;
-            padding: 1rem 0;
-            text-align: center;
+        h1, h2, h3, h4, h5, h6 {
+            color: #e8e8e8;
+            margin: 0 0 10px;
+            font-family: 'OpenSansRegular', "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-weight: normal;
         }
 
-        main {
-            padding: 2rem;
+        p, ul, ol, table, pre, dl {
+            margin: 0 0 20px;
         }
 
-        footer {
-            background-color: #333;
-            color: white;
-            text-align: center;
-            padding: 1rem 0;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
+        h1 {
+            font-size: 28px;
         }
 
-        .button {
-            display: inline-block;
-            padding: 10px 20px;
-            margin: 10px 0;
-            background-color: #4CAF50;
-            color: white;
+        h2 {
+            font-size: 24px;
+        }
+
+        a {
+            color: #ffcc00;
+            font-weight: 400;
             text-decoration: none;
+        }
+
+        a:hover {
+            color: #ffeb9b;
+        }
+
+        .wrapper {
+            max-width: 650px;
+            margin: 0 auto;
+            position: relative;
+            padding: 0 20px;
+        }
+
+        section {
+            max-width: 650px;
+            padding: 30px 0px 50px 0px;
+            margin: 20px 0;
+            margin-top: 70px;
+        }
+
+        /* Profile Image Container */
+        .profile-image-container {
+            position: relative;
+            text-align: center;
+            margin-bottom: 30px;
+            max-width: 300px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .profile-image {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            transition: all 0.5s ease;
+            filter: brightness(1);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            border: 8px solid #1a1a1a;
+            box-sizing: border-box;
+        }
+
+        .profile-image-container:hover .profile-image {
+            transform: scale(1.03);
+            filter: brightness(1.2);
+            box-shadow: 0 15px 30px rgba(255, 204, 0, 0.4);
+        }
+
+        .profile-image-container::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            border-radius: 15px;
+            background: linear-gradient(45deg, #ffcc00, transparent, #ffcc00, transparent);
+            background-size: 400% 400%;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            animation: gradientBG 5s ease infinite;
+        }
+
+        .profile-image-container:hover::before {
+            opacity: 0.7;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Shimmer Effect */
+        .shimmer {
+            display: inline-block;
+            font-size: 3.5rem;
+            font-weight: 700;
+            background-image: linear-gradient(
+                -45deg,
+                #ffcc00 0%,
+                #ffffff 25%,
+                #ffcc00 50%,
+                #ffffff 75%,
+                #ffcc00 100%
+            );
+            background-size: 200% auto;
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+            animation: shimmerAnimation 3s linear infinite;
+            width: 100%;
+            text-align: center;
+            letter-spacing: 4px;
+            margin: 0 auto;
+            font-family: "Arial Black", "Helvetica Bold", sans-serif;
+            font-weight: 900;
+        }
+
+        @keyframes shimmerAnimation {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
+        }
+
+        /* Title Container */
+        .site-title-container {
+            width: 100%;
+            display: block;
+            text-align: center;
+            margin: 40px auto;
+        }
+
+        .site-subtitle {
+            margin-top: 10px;
+            font-size: 1.2rem;
+            color: #ccc;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+
+        /* Video layout and styling */
+        .section-title {
+            font-size: 2.2rem;
+            font-family: "Courier New", monospace;
+            text-align: left;
+            color: #ffcc00;
+            margin: 60px 0 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 204, 0, 0.3);
+            text-shadow: 0 0 5px rgba(255, 204, 0, 0.3);
+        }
+
+        /* Video gallery grid */
+        .video-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin: 20px 0;
+        }
+
+        .iframe-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            height: 0;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .iframe-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
             border-radius: 5px;
         }
 
-        .button:hover {
-            background-color: #45a049;
+        /* Particles background */
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        /* Film grain effect */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.05;
+            pointer-events: none;
+            z-index: 1000;
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc1IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGZpbHRlcj0idXJsKCNhKSIgb3BhY2l0eT0iLjA1IiBkPSJNMCAwaDMwMHYzMDBIMHoiLz48L3N2Zz4=');
+            animation: grain 1s steps(3) infinite;
+        }
+
+        @keyframes grain {
+            0% { transform: translate(0, 0); }
+            33.33% { transform: translate(10px, 10px); }
+            66.66% { transform: translate(-10px, -10px); }
+            100% { transform: translate(0, 0); }
+        }
+
+        /* Back to main site button */
+        .back-button {
+            display: inline-block;
+            padding: 8px 16px;
+            background-color: rgba(255, 204, 0, 0.2);
+            color: #ffcc00;
+            border: 1px solid #ffcc00;
+            border-radius: 4px;
+            margin: 20px 0;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .back-button:hover {
+            background-color: rgba(255, 204, 0, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .shimmer {
+                font-size: 2.5rem;
+            }
+            
+            .site-subtitle {
+                font-size: 1rem;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+                margin: 50px 0 25px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .shimmer {
+                font-size: 2rem;
+                letter-spacing: 3px;
+            }
+            
+            .site-subtitle {
+                font-size: 0.8rem;
+                letter-spacing: 1px;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+                margin: 40px 0 20px;
+            }
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Welcome to My Page</h1>
-    </header>
-    <main>
-        <p>This is a sample HTML page with embedded CSS styling. Feel free to customize it as needed.</p>
-        <a href="#" class="button">Click Me</a>
-    </main>
-    <footer>
-        <p>&copy; 2023 My Website</p>
-    </footer>
+    <div id="particles-js"></div>
+    
+    <div class="wrapper">
+        <section>
+            <a href="index.html" class="back-button">← Back to Main Site</a>
+            
+            <div class="profile-image-container">
+                <img src="assets/images/1551457847892.png" alt="Warren Martin" class="profile-image">
+            </div>
+
+            <div class="site-title-container">
+                <h1 class="shimmer">WARREN MARTIN</h1>
+                <div class="site-subtitle">VIDEO EDITOR · COLORIST · STORYTELLER</div>
+            </div>
+
+            <h2 class="section-title">Promos/Reel</h2>
+            <div class="iframe-container">
+                <iframe src="https://player.vimeo.com/video/95359623?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="560" height="315" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media" title="Star Crossed Killers"></iframe>
+            </div>
+
+            <div class="iframe-container">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/CiebEcI2dSQ?si=NUUkMN3Z8HfsiEA5" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            </div>
+
+            <h2 class="section-title">Arizona State University Biodesign Center</h2>
+            <div class="iframe-container">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/CmL1SnQa2tI?si=GrO6QGksRgTYx6SN" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            </div>
+
+            <h2 class="section-title">Documentary</h2>
+            <div class="iframe-container">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/Kf2PoQKTI9Y?si=RXcA9l7335nj9DKF" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            </div>
+
+            <h2 class="section-title">Events</h2>
+            <div class="iframe-container">
+                <iframe src="https://player.vimeo.com/video/168191701?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="560" height="315" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media" title="Highlight Reel-Wedding HIghlights"></iframe>
+            </div>
+        </section>
+    </div>
+
+    <!-- Particle.js library -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    
+    <script>
+        // Initialize particles.js
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof particlesJS !== 'undefined') {
+                particlesJS('particles-js', {
+                    "particles": {
+                        "number": {
+                            "value": 50,
+                            "density": {
+                                "enable": true,
+                                "value_area": 800
+                            }
+                        },
+                        "color": {
+                            "value": "#ffffff"
+                        },
+                        "opacity": {
+                            "value": 0.1,
+                            "random": false
+                        },
+                        "size": {
+                            "value": 3,
+                            "random": true
+                        },
+                        "line_linked": {
+                            "enable": true,
+                            "distance": 150,
+                            "color": "#ffffff",
+                            "opacity": 0.1,
+                            "width": 1
+                        },
+                        "move": {
+                            "enable": true,
+                            "speed": 2,
+                            "direction": "none",
+                            "random": false,
+                            "straight": false,
+                            "out_mode": "out",
+                            "bounce": false
+                        }
+                    },
+                    "interactivity": {
+                        "detect_on": "canvas",
+                        "events": {
+                            "onhover": {
+                                "enable": true,
+                                "mode": "grab"
+                            },
+                            "onclick": {
+                                "enable": true,
+                                "mode": "push"
+                            },
+                            "resize": true
+                        }
+                    },
+                    "retina_detect": true
+                });
+            }
+        });
+
+        // Extra shimmer effect initialization
+        document.addEventListener('DOMContentLoaded', function() {
+            // Ensure shimmer effect is always visible/working
+            const shimmerElement = document.querySelector('.shimmer');
+            if (shimmerElement) {
+                // Force animation restart
+                shimmerElement.style.animation = 'none';
+                setTimeout(function() {
+                    shimmerElement.style.animation = 'shimmerAnimation 3s linear infinite';
+                }, 10);
+            }
+        });
+    </script>
 </body>
 </html>
