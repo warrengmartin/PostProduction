@@ -105,7 +105,11 @@ layout: default
 <div class="profile-image-container">
   <img src="assets/images/1551457847892.png" alt="Warren Martin" class="profile-image">
 </div>
-
+<div style="text-align: center; margin-top: 20px;">
+  <a href="TESTING.html" style="color: #ffcc00; text-decoration: none; font-size: 1.2rem; font-weight: bold;">
+    Go to TESTING Page
+  </a>
+</div>
 <div>
   <h1 class="shimmer">WARREN MARTIN</h1>
   <div class="site-subtitle">VIDEO EDITOR · COLORIST · STORYTELLER</div>
