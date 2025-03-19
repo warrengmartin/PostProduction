@@ -327,6 +327,75 @@
             }
         }
 
+        /* Video preview styles */
+        .video-preview-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            transition: opacity 1s ease;
+        }
+
+        .video-preview-container.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .video-preview {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 70px;
+            height: 70px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            z-index: 6;
+        }
+
+        .play-button:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+
+        .play-button:before {
+            content: '';
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 15px 0 15px 25px;
+            border-color: transparent transparent transparent #ffffff;
+            margin-left: 5px;
+        }
+
+        /* Video element styles */
+        .video-element {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+        }
+
     </style>
 </head>
 <body>
@@ -340,19 +409,19 @@
                 { 
                     id: 'LionMan_trailer', 
                     src: '../assets/videos/Lion-Man_Trailer.mp4', 
-                    title: 'Star Crossed Killers',
+                    title: 'Lion Man Trailer',
                     description: 'A gripping trailer to Lion Man, a short film about grief.'
                 },
                 { 
                     id: '50Nic_trailer', 
                     src: '../assets/videos/50NIC_SundayCut_V3.mp4#t=1.9', 
-                    title: '50Nic',
+                    title: '50Nic Trailer',
                     description: 'Trailer to 50Nic, a short film about a troubled teen.'
                 },
                 { 
                     id: 'SCK_trailer', 
                     src: 'https://player.vimeo.com/video/95359623?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479', 
-                    title: 'Star Crossed Killers',
+                    title: 'Star Crossed Killers Trailer',
                     description: 'Intro to future project called Star Crossed Killers, a story about trauma.'
                 },
                 // { id: 'trailer2', src: 'https://www.youtube.com/embed/4YgVtsGxEuQ?si=9tuUwxxM18q3nc98', title: 'Myth, Monster, Man' },
@@ -361,7 +430,7 @@
             reel: [
                 { 
                     id: 'MyReel', src: '../assets/videos/Reel.mp4', 
-                    title: 'Warren Martin Reel',
+                    title: 'My Reel',
                     description: 'My own reel demonstrating my editing skills.'
                 },
                 { 
@@ -567,32 +636,110 @@
                     );
                 }
 
-                return videos.map(video => (
-                    <div key={video.id} className="video-container">
-                        <div className="video-frame-container">
-                            <iframe
-                                src={video.src}
-                                title={video.title}
-                                width="560"
-                                height="315"
-                                frameBorder="0"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowFullScreen
-                                loading="lazy"
-                            />
+                return videos.map(video => {
+                    const local = isLocalVideo(video.src);
+                    
+                    return (
+                        <div key={video.id} className="video-container">
+                            <div className="video-frame-container">
+                                {local ? (
+                                    // Local video with preview
+                                    <>
+                                        <video 
+                                            id={`video-${video.id}`}
+                                            className="video-element" 
+                                            src={video.src} 
+                                            controls
+                                            preload="metadata"
+                                        />
+                                        <div id={`preview-${video.id}`} className="video-preview-container">
+                                            <img 
+                                                className="video-preview"
+                                                src={getVideoThumbnail(video.src)} 
+                                                alt={video.title} 
+                                            />
+                                            <div 
+                                                className="play-button" 
+                                                onClick={() => handleVideoPlay(video.id)}
+                                            />
+                                        </div>
+                                    </>
+                                ) : (
+                                    // Embedded video (YouTube, Vimeo)
+                                    <iframe
+                                        src={video.src}
+                                        title={video.title}
+                                        width="560"
+                                        height="315"
+                                        frameBorder="0"
+                                        allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                        allowFullScreen
+                                        loading="lazy"
+                                    />
+                                )}
+                            </div>
+                            <div className="video-info">
+                                <h3 className="video-title">{video.title}</h3>
+                                {video.description && (
+                                    <p className="video-description">{video.description}</p>
+                                )}
+                            </div>
                         </div>
-                        <div className="video-info">
-                            <h3 className="video-title">{video.title}</h3>
-                            {video.description && (
-                                <p className="video-description">{video.description}</p>
-                            )}
-                        </div>
-                    </div>
-                ));
+                    );
+                });
             };
 
+            // Function to check if a video is local (file system) or embedded (YouTube/Vimeo)
+            const isLocalVideo = (src) => {
+                return src.startsWith('../assets/videos/');
+            };
 
+            // Function to get a thumbnail from local video
+            const getVideoThumbnail = (src) => {
+                // For now, just return the first frame of the video
+                return src + '#t=0.001';
+            };
 
+            // Handle video play after preview
+            const handleVideoPlay = (videoId) => {
+                const previewContainer = document.getElementById(`preview-${videoId}`);
+                const videoElement = document.getElementById(`video-${videoId}`);
+                
+                if (previewContainer) {
+                    previewContainer.classList.add('fade-out');
+                    setTimeout(() => {
+                        if (videoElement) {
+                            videoElement.play();
+                        }
+                    }, 1000); // Start playing after fade-out completes
+                }
+            };
+
+            // Effect to initialize video previews
+            React.useEffect(() => {
+                // For videos that are local, set up the 3-second preview
+                const setupVideoPreviews = () => {
+                    videos = document.querySelectorAll('.video-element');
+                    videos.forEach(video => {
+                        const videoId = video.id.replace('video-', '');
+                        const previewContainer = document.getElementById(`preview-${videoId}`);
+                        
+                        if (previewContainer) {
+                            // Auto-fade the preview after 3 seconds
+                            setTimeout(() => {
+                                previewContainer.classList.add('fade-out');
+                                setTimeout(() => {
+                                    // Don't autoplay, just make the video ready to be played manually
+                                    video.currentTime = 0;
+                                }, 1000);
+                            }, 3000);
+                        }
+                    });
+                };
+                
+                // Call after components have rendered
+                setTimeout(setupVideoPreviews, 1000);
+            }, []);
 
             return (
                 <>
