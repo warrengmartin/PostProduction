@@ -3,23 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Warren Martin - Cinematic Portfolio</title>
+    <title>Warren Martin - Video Editor</title>
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <style>
-        /* Base styles */
+        /* --- Reset and Basic Styles --- */
         body {
             margin: 0;
             padding: 0;
-            background: #000;
+            background-color: #000; /* Consistent dark background */
             color: #fff;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; /* Apple's system font */
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased; /* Better font rendering */
+            -moz-osx-font-smoothing: grayscale;
         }
 
-        /* Smooth scrolling for the whole page */
         html {
             scroll-behavior: smooth;
             height: 100%;
@@ -30,30 +30,26 @@
             background: linear-gradient(to bottom, #000, #111);
         }
 
-        /* Fixed background overlay */
-        .background-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(circle at 20% 30%, rgba(255, 204, 0, 0.05) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.03) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: 1;
+        a {
+            color: #0a84ff; /* Apple's link color */
+            text-decoration: none;
+            transition: color 0.2s ease;
         }
 
-        /* Hero section */
+        a:hover {
+            color: #0071e3;
+        }
+
+        /* --- Hero Section --- */
         .hero {
             height: 100vh;
-            width: 100%;
-            position: relative;
-            overflow: hidden;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            background: radial-gradient(circle at center, rgba(26, 26, 26, 0.8) 0%, rgba(0, 0, 0, 0.95) 100%);
+            text-align: center;
+            padding: 0 20px; /* Consistent padding */
+            position: relative; /* For the background */
         }
 
         .hero-background {
@@ -62,130 +58,114 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle at center, #1a1a1a 0%, #000 100%);
-            z-index: 1;
+            background: radial-gradient(circle at center, rgba(26, 26, 26, 0.7) 0%, rgba(0, 0, 0, 0.9) 100%); /* Subtle gradient */
+            z-index: -1; /* Behind the content */
         }
 
-        .hero-background::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(circle at 20% 30%, rgba(255, 204, 0, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
-        }
 
-        .hero-content {
-            position: relative;
-            z-index: 2;
-            text-align: center;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: fadeInUp 1s forwards 0.5s;
-        }
-
-        /* Dynamic text effect */
-        .dynamic-text {
-            font-size: 8vw;
-            font-weight: 700;
-            background: linear-gradient(to right, #fff, #999, #fff);
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+            background: linear-gradient(to right, #fff, #ddd);
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin: 0;
-            line-height: 1;
-            letter-spacing: -0.02em;
+
         }
 
-        /* Profile image styling */
-        .profile-image {
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
+        .hero-subtitle {
+            font-size: 1.5rem;
+            font-weight: 400;
+            color: #aaa; /* Lighter color for subtitle */
             margin-bottom: 2rem;
-            border: 3px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 0 30px rgba(255, 204, 0, 0.2);
-            transition: all 0.5s ease;
+            max-width: 700px; /* Limit width for readability */
+        }
+
+        .profile-image {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .profile-image:hover {
-            transform: scale(1.05);
-            border-color: rgba(255, 204, 0, 0.3);
-            box-shadow: 0 0 40px rgba(255, 204, 0, 0.3);
+             transform: scale(1.05);
+             box-shadow: 0 6px 30px rgba(255, 204, 0, 0.4);
         }
 
-        /* Section styles */
+        /* --- Section Styles --- */
         .section {
-            min-height: auto;
+            padding: 80px 20px; /* Consistent padding */
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            position: relative;
-            padding: 120px 0;
-            overflow: hidden;
-            transition: opacity 0.5s ease;
-            will-change: opacity;
+            opacity: 0; /* Start hidden for IntersectionObserver */
+            transform: translateY(50px); /* Start below */
+            transition: opacity 0.8s ease, transform 0.8s ease;
+            min-height: auto;
         }
 
-        .section:not(.active) {
-            opacity: 0.7;
-            will-change: opacity;
-            transform: translateZ(0);
-        }
-
-        /* Video gallery grid layout */
-        .video-showcase {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 40px;
-            opacity: 0;
-            transform: translateY(40px);
-            transition: all 1s ease;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(560px, 1fr));
-            gap: 30px;
-            justify-content: center;
-            will-change: transform, opacity;
-        }
-
-        .video-showcase.visible {
+        .section.visible {
             opacity: 1;
             transform: translateY(0);
         }
 
-        /* Video container with consistent dimensions */
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #fff;
+            text-align: center;
+            width: 100%; /* Full width */
+            padding-bottom: 0.5rem; /* Space for the line */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* Subtle line */
+            margin-top: 0; /* Reset top margin */
+        }
+
+        /* --- Video Showcase --- */
+        .video-showcase {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); /* Responsive grid */
+            gap: 40px;
+            width: 100%;
+            max-width: 1200px; /* Limit max width */
+            margin-top: 3rem;
+
+        }
+
         .video-container {
             position: relative;
-            width: 100%;
-            height: 0;
-            padding-bottom: 56.25%; /* 16:9 aspect ratio */
-            margin: 0;
             border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
-            transform-style: preserve-3d;
-            transform: perspective(1000px);
-            transition: all 0.5s ease;
-            opacity: 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            opacity: 0; /* Start hidden */
             transform: translateY(30px);
-            background: #000;
-            max-width: 560px;
-            justify-self: center;
-            will-change: transform, opacity;
+            transition: opacity 0.6s ease, transform 0.6s ease;
+            background-color: black;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .video-container.visible{
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .video-container:hover {
-            transform: perspective(1000px) translateY(-10px) rotateX(2deg);
-            box-shadow: 0 40px 70px rgba(0,0,0,0.5);
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
         }
 
-        .video-container.visible {
-            opacity: 1;
-            transform: translateY(0);
+        .video-frame-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
         }
 
         .video-container iframe {
@@ -197,111 +177,79 @@
             border: none;
         }
 
-        /* Lazy loading wrapper */
-        .lazy-video-wrapper {
-            position: relative;
-            background: rgba(0, 0, 0, 0.2);
-            cursor: pointer;
+        /* Video title and description styles */
+        .video-info {
+            padding: 15px 10px;
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 0 0 12px 12px;
+        }
+        
+        .video-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 0 0 8px 0;
+            color: #fff;
+        }
+        
+        .video-description {
+            font-size: 0.9rem;
+            color: #aaa;
+            margin: 0;
+            line-height: 1.4;
         }
 
-        .lazy-video-wrapper::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 60px;
-            height: 60px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            transition: all 0.3s ease;
-        }
-
-        /* Navigation dots */
+        /* --- Navigation Dots --- */
         .nav-dots {
             position: fixed;
-            right: 40px;
+            right: 20px;
             top: 50%;
             transform: translateY(-50%);
-            z-index: 100;
             display: flex;
             flex-direction: column;
-            gap: 20px;
-            backdrop-filter: blur(5px);
-            padding: 10px 5px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 20px;
+            gap: 12px;
+            z-index: 100;
         }
 
         .nav-dot {
-            width: 12px;
-            height: 12px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
-            background: rgba(255,255,255,0.2);
+            background-color: rgba(255, 255, 255, 0.3);
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: background-color 0.3s ease, transform 0.3s ease;
         }
 
         .nav-dot.active {
-            background: #fff;
-            transform: scale(1.2);
+            background-color: #fff;
+            transform: scale(1.3);
         }
 
-        /* Category labels */
-        .category-label {
-            position: absolute;
-            left: 40px;
-            font-size: 14px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            writing-mode: vertical-lr;
-            transform: rotate(180deg);
-            opacity: 0.5;
-            transition: opacity 0.3s ease;
-        }
-
-        .category-label:hover {
-            opacity: 1;
-        }
-
-        /* Scroll progress indicator */
+        /* --- Progress Bar --- */
         .progress-bar {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            height: 1px;
-            background: rgba(255,255,255,0.1);
+            height: 3px; /* Thicker progress bar */
+            background-color: rgba(255, 255, 255, 0.1);
             z-index: 1000;
         }
 
         .progress {
             height: 100%;
-            background: #fff;
-            width: 0%;
-            transition: width 0.1s linear;
+            background-color: #0a84ff; /* Apple's highlight color */
+            width: 0;
         }
 
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translate3d(0, 20px, 0);
-            }
-            to {
-                opacity: 1;
-                transform: translate3d(0, 0, 0);
-                will-change: auto;
-            }
-        }
-
-        /* Loading animation */
+        /* --- Loader --- */
         .loader {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: #000;
+            background-color: #000;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -318,323 +266,332 @@
             content: '';
             width: 40px;
             height: 40px;
-            border: 2px solid #333;
+            border: 3px solid #333;
             border-top-color: #fff;
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
         }
-
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
 
-        /* Back button */
+
+        /* --- Back Link --- */
         .back-link {
             position: fixed;
             top: 20px;
             left: 20px;
             color: #fff;
-            text-decoration: none;
-            font-size: 14px;
-            letter-spacing: 1px;
-            opacity: 0.7;
-            transition: opacity 0.3s ease;
-            z-index: 1000;
+            z-index: 100;
+            padding: 8px 12px;
+            border-radius: 8px;
+            background-color: rgba(255, 255, 255, 0.1);
+            transition: background-color 0.2s ease;
         }
 
         .back-link:hover {
-            opacity: 1;
+            background-color: rgba(255, 255, 255, 0.2);
         }
 
-        /* Scroll-based parallax effect */
-        .parallax-wrapper {
-            position: relative;
-            will-change: transform;
-            transform-style: preserve-3d;
-        }
-
-        /* Responsive design */
-        @media (max-width: 1200px) {
-            .video-showcase {
-                grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
-            }
-        }
-
+        /* --- Responsive --- */
         @media (max-width: 768px) {
-            .dynamic-text {
-                font-size: 12vw;
+            .hero-title {
+                font-size: 3rem;
             }
-            
+
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
             .video-showcase {
-                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-                padding: 0 20px;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Adjust for smaller screens */
                 gap: 20px;
+
             }
-            
-            .video-container {
-                box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-            }
-            
-            .nav-dots {
-                right: 20px;
-            }
-            
-            .category-label {
-                left: 20px;
-                font-size: 12px;
+                .nav-dots {
+                right: 10px; /* Closer to the edge on mobile */
             }
 
-            .video-container {
-                margin: 50px 0;
-            }
-
-            .nav-dots {
-                right: 10px;
-            }
-
-            .category-label {
-                font-size: 12px;
-                left: 10px;
+            .profile-image {
+              width: 150px;
+              height: 150px;
             }
         }
-
-        @media (max-width: 480px) {
+         @media (max-width: 480px) {
             .video-showcase {
                 grid-template-columns: 1fr;
             }
         }
+
     </style>
 </head>
 <body>
-    <div class="background-overlay"></div>
     <div class="loader"></div>
-    <a href="../index.html" class="back-link">← Back to Main Site</a>
+    <a href="../index.html" class="back-link">← Back</a>
     <div id="root"></div>
 
     <script type="text/babel">
-        // Video data configuration
-        const videoData = {
-            promos: [
-                {
-                    id: 'promo1',
-                    src: 'https://player.vimeo.com/video/95359623?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479',
-                    title: 'Star Crossed Killers'
+      const videoData = {
+            trailers: [
+                { 
+                    id: 'LionMan_trailer', 
+                    src: '../assets/videos/Lion-Man_Trailer.mp4', 
+                    title: 'Star Crossed Killers',
+                    description: 'A gripping trailer to Lion Man, a short film about grief.'
                 },
-                {
-                    id: 'promo2',
-                    src: 'https://www.youtube.com/embed/CiebEcI2dSQ?si=NUUkMN3Z8HfsiEA5',
-                    title: 'YouTube Promo Video'
+                { 
+                    id: '50Nic_trailer', 
+                    src: '../assets/videos/50NIC_SundayCut_V3.mp4#t=1.9', 
+                    title: '50Nic',
+                    description: 'Trailer to 50Nic, a short film about a troubled teen.'
                 },
-                {
-                    id: 'promo3',
-                    src: 'https://www.youtube.com/embed/4ZLRbQ41imI?si=Bs-OAPKU4fI-9gLX',
-                    title: 'Movie Trailer'
+                { 
+                    id: 'SCK_trailer', 
+                    src: 'https://player.vimeo.com/video/95359623?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479', 
+                    title: 'Star Crossed Killers',
+                    description: 'Intro to future project called Star Crossed Killers, a story about trauma.'
                 },
-                {
-                    id: 'promo4',
-                    src: 'https://www.youtube.com/embed/GTS9sd-aYD0?si=qzr0SXej5W8clAxH',
-                    title: 'YouTube Promo Video 2'
-                }
+                // { id: 'trailer2', src: 'https://www.youtube.com/embed/4YgVtsGxEuQ?si=9tuUwxxM18q3nc98', title: 'Myth, Monster, Man' },
+                // { id: 'trailer3', src: 'https://www.youtube.com/embed/HrtLCMt4Rlk?si=ZfSJlhYmBWiR0Eyf', title: 'FaceValue' },
             ],
-            shortFilms: [
-                // Empty category as placeholder - can be filled later
-            ],
-            biodesign: [
-                {
-                    id: 'bio1',
-                    src: 'https://www.youtube.com/embed/CmL1SnQa2tI?si=GrO6QGksRgTYx6SN',
-                    title: 'ASU Biodesign Center'
+            reel: [
+                { 
+                    id: 'MyReel', src: '../assets/videos/Reel.mp4', 
+                    title: 'Warren Martin Reel',
+                    description: 'My own reel demonstrating my editing skills.'
                 },
-                {
-                    id: 'bio2',
-                    src: 'https://www.youtube.com/embed/FW6MXqzeg7M?si=rdInD-yaGF7BMQuL',
-                    title: 'ASU Research'
+                { 
+                    id: 'bio1', 
+                    src: '../assets/videos/Louis_Reel.mp4', 
+                    title: 'YouTube Promo Video', 
+                    description: 'A promotional video showcasing content for a YouTube channel.' 
                 },
-                {
-                    id: 'bio3',
-                    src: 'https://www.youtube.com/embed/T3nPgcY3Sfo?si=sEtPbfQjg-9mB1WP',
-                    title: 'ASU Biodesign 2'
-                }
+                { 
+                    id: 'bio1', 
+                    src: 'https://www.youtube.com/embed/CiebEcI2dSQ?si=NUUkMN3Z8HfsiEA5', 
+                    title: 'YouTube Promo Video', 
+                    description: 'A dynamic promo video designed to attract YouTube audiences.' 
+                },
+                
             ],
+            education: [
+                
+                { 
+                    id: 'bio2', 
+                    src: 'https://www.youtube.com/embed/CmL1SnQa2tI?si=GrO6QGksRgTYx6SN', 
+                    title: 'ASU Biodesign Center', 
+                    description: 'An educational video highlighting the innovative research at ASU Biodesign Center.' 
+                },
+                { 
+                    id: 'bio3', 
+                    src: 'https://www.youtube.com/embed/FW6MXqzeg7M?si=rdInD-yaGF7BMQuL', 
+                    title: 'ASU Research', 
+                    description: 'A video showcasing groundbreaking research conducted at ASU.' 
+                },
+                { 
+                    id: 'bio4', 
+                    src: 'https://www.youtube.com/embed/T3nPgcY3Sfo?si=sEtPbfQjg-9mB1WP', 
+                    title: 'ASU Biodesign 2', 
+                    description: 'A follow-up video exploring further advancements at ASU Biodesign.' 
+                },
+            ],
+
+            
             documentary: [
-                {
-                    id: 'doc1',
-                    src: 'https://www.youtube.com/embed/Kf2PoQKTI9Y?si=RXcA9l7335nj9DKF',
-                    title: 'Documentary Sample'
+                { 
+                    id: 'Mission Garden', 
+                    src: 'https://www.youtube.com/embed/Kf2PoQKTI9Y?si=RXcA9l7335nj9DKF', 
+                    title: 'Mission Garden: Documentary', 
+                    description: 'A living agricultural museum and educational space, with 4,000 years of agricultural history in the Tucson Basin, exploring diverse cultures and heritage crops through themed garden plots.' 
+                },
+            ],
+            workingOut: [
+                { 
+                    id: 'heat_dance_80s', 
+                    src: '../assets/videos/Heat_Dance_80s_Throwback.mp4', 
+                    title: '80s Throwback Dance',
+                    description: 'A fun, energetic dance workout inspired by 80s music and aesthetics.'
+                },
+                { 
+                    id: 'heat_dance_school', 
+                    src: '../assets/videos/Heat_Dance_Back_to_School.mp4', 
+                    title: 'Back to School Dance',
+                    description: 'A back-to-school themed dance workout to help students stay fit during the academic year.'
+                },
+                { 
+                    id: 'heat_dance_promo', 
+                    src: '../assets/videos/Heat_Dance_Internship_Promo.mp4', 
+                    title: 'Internship Promo',
+                    description: 'Promotional video for dance internship program showcasing various dance and workout routines.'
                 }
+            ],
+            miscellaneous: [
+                { 
+                    id: 'FromLogo', 
+                    src: 'https://www.youtube.com/embed/at18CH9GNpA?si=blsXBNWGUACQ2ICC', 
+                    title: 'From Studios Logo', 
+                    description: 'Title Sequence for a small production company: "From Studios".' 
+                },
+                { 
+                    id: 'StarWaresLogo', 
+                    src: 'https://www.youtube.com/embed/02ELU1mQsrg?si=g8TSwz8gTh0V3nVx', 
+                    title: 'Star Wars Logo Animation', 
+                    description: 'Practive excersize using after effects, illustrator, and premiere pro.' 
+                },
+                { 
+                    id: 'EditCompEntry', 
+                    src: 'https://www.youtube.com/embed/4ZLRbQ41imI?si=Bs-OAPKU4fI-9gLX', 
+                    title: 'Editing Competition Entry', 
+                    description: '' 
+                },
+                { 
+                    id: 'HeatDanceBTS', 
+                    src: 'https://www.youtube.com/embed/GTS9sd-aYD0?si=qzr0SXej5W8clAxH', 
+                    title: 'YouTube Promo Video 2', 
+                    description: 'A second promotional video aimed at boosting YouTube channel visibility.' 
+                },
             ],
             events: [
-                {
-                    id: 'event1',
-                    src: 'https://player.vimeo.com/video/168191701?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479',
-                    title: 'Wedding Highlights'
+                { 
+                    id: 'Wedding Highlights', 
+                    src: 'https://player.vimeo.com/video/168191701?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479', 
+                    title: 'Wedding Videography Highlights', 
+                    description: 'Some of my wedding videography work edited by Warren Martin.' 
                 },
-                {
-                    id: 'event2',
-                    src: 'https://player.vimeo.com/video/167626373?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479',
-                    title: 'Event Sample'
-                }
+                { 
+                    id: 'Quenceanera Hightlights', 
+                    src: 'https://player.vimeo.com/video/167626373?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479', 
+                    title: 'Quenceanera Videography Highlights', 
+                    description: 'A sample video showcasing highlights from a special event.' 
+                },
             ],
-            school: [
-                {
-                    id: 'school1',
-                    src: 'https://www.youtube.com/embed/9TYfcyvSpJQ',
-                    title: 'Student Film Project'
-                },
-                {
-                    id: 'school2',
-                    src: 'https://www.youtube.com/embed/HXqaLyylPsE',
-                    title: 'Campus Documentary'
-                }
-            ]
         };
 
-        // Throttle function to limit function calls
-        function throttle(func, limit) {
-            let inThrottle;
-            return function() {
-                const args = arguments;
+        // Debounce function for scroll handling
+        function debounce(func, wait) {
+            let timeout;
+            return function(...args) {
                 const context = this;
-                if (!inThrottle) {
-                    func.apply(context, args);
-                    inThrottle = true;
-                    setTimeout(() => inThrottle = false, limit);
-                }
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(context, args), wait);
             };
         }
 
         const App = () => {
             const [activeSection, setActiveSection] = React.useState(0);
             const [scrollProgress, setScrollProgress] = React.useState(0);
-            const [videoVisibility, setVideoVisibility] = React.useState({});
             const sectionRefs = React.useRef([]);
-            
             const sections = [
                 { id: 'hero', title: 'Introduction' },
-                { id: 'narrative', title: 'Narrative', videos: videoData.promos },
-                { id: 'shortFilms', title: 'Short Films', videos: videoData.shortFilms },
-                { id: 'biodesign', title: 'ASU Biodesign', videos: videoData.biodesign },
+                { id: 'trailers', title: 'Trailers', videos: videoData.trailers },
+                { id: 'Reel', title: 'Reel', videos: videoData.reel },
+                { id: 'Education', title: 'Education', videos: videoData.education },
                 { id: 'documentary', title: 'Documentary', videos: videoData.documentary },
+                { id: 'workingOut', title: 'Working Out', videos: videoData.workingOut },
                 { id: 'events', title: 'Events', videos: videoData.events },
-                { id: 'school', title: 'School', videos: videoData.school }
+                { id: 'miscellaneous', title: 'miscellaneous', videos: videoData.miscellaneous }
             ];
 
-            // Memoize the calculation of active section
-            const calculateActiveSection = React.useCallback(() => {
-                const currentPosition = window.scrollY + window.innerHeight / 2;
-                
-                for (let i = 0; i < sectionRefs.current.length; i++) {
-                    const section = sectionRefs.current[i];
-                    if (section && section.offsetTop <= currentPosition && 
-                        section.offsetTop + section.offsetHeight > currentPosition) {
-                        setActiveSection(i);
-                        break;
-                    }
-                }
-            }, []);
-
-            // Optimize scroll handler with throttling
             React.useEffect(() => {
-                // Remove loader after content is ready
-                const loader = document.querySelector('.loader');
-                setTimeout(() => {
-                    loader.classList.add('fade-out');
-                }, 1000);
+                 const loader = document.querySelector('.loader');
+                if (loader) {
+                    setTimeout(() => {
+                        loader.classList.add('fade-out');
+                    }, 1000);
+                }
 
-                // Initialize scroll handling with throttling
-                const handleScroll = throttle(() => {
-                    // Use requestAnimationFrame for smooth performance
-                    window.requestAnimationFrame(() => {
+                // --- Intersection Observer for Lazy Loading and Animations ---
+                const observer = new IntersectionObserver(
+                    (entries) => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting) {
+                                entry.target.classList.add('visible');
+                                observer.unobserve(entry.target);
+                            }
+                        });
+                    },
+                    {
+                        rootMargin: '100px 0px',
+                        threshold: 0.1,
+                    }
+                );
+
+
+                document.querySelectorAll('.section, .video-container').forEach(el => {
+                    observer.observe(el);
+                });
+
+
+                // --- Scroll Event Handling (Debounced) ---
+                const handleScroll = debounce(() => {
+                   requestAnimationFrame(() => {
                         const progress = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
                         setScrollProgress(progress);
-                        calculateActiveSection();
-                    });
-                }, 100);
 
-                window.addEventListener('scroll', handleScroll, { passive: true });
-                
-                // Collect section refs
-                sectionRefs.current = sections.map(section => document.getElementById(section.id));
-                
-                return () => window.removeEventListener('scroll', handleScroll);
-            }, [calculateActiveSection, sections]);
-
-            // Use Intersection Observer for lazy loading videos
-            React.useEffect(() => {
-                const options = {
-                    root: null,
-                    rootMargin: '100px',
-                    threshold: 0.1
-                };
-
-                const observer = new IntersectionObserver((entries) => {
-                    const newVisibility = {...videoVisibility};
-                    
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            entry.target.classList.add('visible');
-                            // Set this video as visible to load it
-                            const videoId = entry.target.dataset.videoId;
-                            if (videoId) {
-                                newVisibility[videoId] = true;
+                        const currentPosition = window.scrollY + window.innerHeight / 2;
+                        for (let i = 0; i < sectionRefs.current.length; i++) {
+                            const section = sectionRefs.current[i];
+                            if (section && section.offsetTop <= currentPosition && section.offsetTop + section.offsetHeight > currentPosition) {
+                                setActiveSection(i);
+                                break;
                             }
                         }
-                    });
-                    
-                    setVideoVisibility(newVisibility);
-                }, options);
+                   });
 
-                // Observe both showcase containers and individual video containers
-                document.querySelectorAll('.video-container').forEach(container => {
-                    observer.observe(container);
-                });
-                
-                document.querySelectorAll('.video-showcase').forEach(showcase => {
-                    observer.observe(showcase);
-                });
+                }, 50);
 
-                return () => observer.disconnect();
-            }, [videoVisibility]);
+                window.addEventListener('scroll', handleScroll);
 
-            // Memoize the render of videos to prevent unnecessary re-renders
-            const renderVideos = React.useCallback((videos) => {
+                sectionRefs.current = sections.map(section => document.getElementById(section.id));
+
+
+                return () => {
+                    window.removeEventListener('scroll', handleScroll);
+                    observer.disconnect();
+                };
+            }, [sections]);
+
+
+
+             const renderVideos = (videos) => {
                 if (!videos || videos.length === 0) {
                     return (
-                        <div style={{ textAlign: 'center', gridColumn: '1 / -1', padding: '50px 0', opacity: 0.5 }}>
-                            No videos in this section
+                        <div style={{ textAlign: 'center',  padding: '50px 0', color: '#666' }}>
+                            No videos in this section yet.
                         </div>
                     );
                 }
-                
+
                 return videos.map(video => (
-                    <div key={video.id} className="video-container" data-video-id={video.id}>
-                        {videoVisibility[video.id] ? (
+                    <div key={video.id} className="video-container">
+                        <div className="video-frame-container">
                             <iframe
                                 src={video.src}
                                 title={video.title}
                                 width="560"
                                 height="315"
-                                loading="lazy"
+                                frameBorder="0"
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                 allowFullScreen
+                                loading="lazy"
                             />
-                        ) : (
-                            <div className="video-placeholder" 
-                                 style={{
-                                     width: '100%', 
-                                     height: '100%', 
-                                     backgroundColor: '#111',
-                                     position: 'absolute',
-                                     display: 'flex',
-                                     alignItems: 'center',
-                                     justifyContent: 'center'
-                                 }}>
-                                <div style={{color: '#666'}}>Loading video...</div>
-                            </div>
-                        )}
+                        </div>
+                        <div className="video-info">
+                            <h3 className="video-title">{video.title}</h3>
+                            {video.description && (
+                                <p className="video-description">{video.description}</p>
+                            )}
+                        </div>
                     </div>
                 ));
-            }, [videoVisibility]);
+            };
+
+
+
 
             return (
                 <>
@@ -647,39 +604,21 @@
                             <div
                                 key={section.id}
                                 className={`nav-dot ${activeSection === index ? 'active' : ''}`}
-                                onClick={() => {
-                                    document.getElementById(section.id).scrollIntoView({ 
-                                        behavior: 'smooth' 
-                                    });
-                                }}
+                                onClick={() => document.getElementById(section.id)?.scrollIntoView({ behavior: 'smooth' })}
                             />
                         ))}
                     </nav>
 
-                    <section id="hero" className="hero section">
-                        <div className="hero-background" />
-                        <div className="hero-content">
-                            <img 
-                                src="../assets/images/1551457847892.png" 
-                                alt="Warren Martin"
-                                className="profile-image"
-                                loading="eager"
-                            />
-                            <h1 className="dynamic-text">WARREN MARTIN</h1>
-                            <p style={{ 
-                                fontSize: '1.5rem', 
-                                opacity: 0.7, 
-                                marginTop: '2rem',
-                                letterSpacing: '0.2em'
-                            }}>
-                                VISUAL STORYTELLER
-                            </p>
-                        </div>
+                    <section id="hero" className="hero section visible">
+                      <div className="hero-background"></div>
+                        <img src="../assets/images/1551457847892.png" alt="Warren Martin" className="profile-image" />
+                        <h1 className="hero-title">Warren Martin</h1>
+                        <p className="hero-subtitle">Video Editor</p>
                     </section>
 
-                    {sections.slice(1).map(section => (
+                    {sections.slice(1).map((section) => (
                         <section key={section.id} id={section.id} className="section">
-                            <div className="category-label">{section.title}</div>
+                            <h2 className="section-title">{section.title}</h2>
                             <div className="video-showcase">
                                 {renderVideos(section.videos)}
                             </div>
@@ -689,12 +628,8 @@
             );
         };
 
-        // Memo-wrapped component to prevent unnecessary renders
-        const MemoizedApp = React.memo(App);
 
-        ReactDOM.render(<MemoizedApp />, document.getElementById('root'));
-        
-        // Remove redundant observers since we're handling everything in the React component
+        ReactDOM.render(<App />, document.getElementById('root'));
     </script>
 </body>
 </html>
