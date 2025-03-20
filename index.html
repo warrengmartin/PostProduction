@@ -8,7 +8,7 @@
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
-        /* --- CSS (same as before, no changes needed) --- */
+        /* --- Reset and Basic Styles --- */
         body {
             margin: 0;
             padding: 0;
@@ -327,6 +327,7 @@
             }
         }
 
+        /* Video preview styles */
         .video-preview-container {
             position: absolute;
             top: 0;
@@ -353,36 +354,21 @@
             object-fit: cover;
         }
 
-        .play-button {
+        /* Hover GIF Preview styles */
+        .video-gif-preview {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 70px;
-            height: 70px;
-            background-color: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.3s ease;
-            z-index: 6;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 0.4s ease-in-out;
+            z-index: 4;
         }
 
-        .play-button:hover {
-            background-color: rgba(255, 255, 255, 0.3);
-            transform: translate(-50%, -50%) scale(1.1);
-        }
-
-        .play-button:before {
-            content: '';
-            width: 0;
-            height: 0;
-            border-style: solid;
-            border-width: 15px 0 15px 25px;
-            border-color: transparent transparent transparent #ffffff;
-            margin-left: 5px;
+        .video-container:hover .video-gif-preview {
+            opacity: 1;
         }
 
         /* Video element styles */
@@ -542,7 +528,6 @@
         const App = () => {
             const [activeSection, setActiveSection] = React.useState(0);
             const [scrollProgress, setScrollProgress] = React.useState(0);
-            const [thumbnailSrc, setThumbnailSrc] = React.useState({});
             const sectionRefs = React.useRef([]);
             const sections = [
                 { id: 'hero', title: 'Introduction' },
@@ -616,60 +601,6 @@
             }, [sections]);
 
 
-            const FALLBACK_IMAGE = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
-
-            const generateThumbnail = (video, time) => {
-              return new Promise((resolve, reject) => {
-                try {
-                  const canvas = document.createElement('canvas');
-                  canvas.width = video.videoWidth;
-                  canvas.height = video.videoHeight;
-                  const ctx = canvas.getContext('2d');
-                  video.currentTime = time;
-
-                  const drawImage = () => {
-                    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-                    const dataURL = canvas.toDataURL('image/png');
-                    resolve(dataURL);
-                    video.removeEventListener('seeked', drawImage); // Clean up
-                  };
-
-                  video.addEventListener('seeked', drawImage);
-
-                } catch (error) {
-                  console.error('Error generating thumbnail:', error);
-                  reject(FALLBACK_IMAGE);
-                }
-              });
-            };
-
-
-            const getVideoThumbnail = async (src, videoId) => {
-                if (!isLocalVideo(src)) return;
-
-                const video = document.createElement('video');
-                video.src = src;
-                video.crossOrigin = 'anonymous'; // Important for local files
-                video.preload = 'metadata';      // Only load metadata
-
-              video.addEventListener('loadedmetadata', async () => {
-                const randomTime = Math.random() * video.duration;
-                try{
-                    const dataURL = await generateThumbnail(video, randomTime);
-                    setThumbnailSrc(prev => ({...prev, [videoId]: dataURL}));
-                }catch (error) {
-                    setThumbnailSrc(prev => ({...prev, [videoId]: FALLBACK_IMAGE}));
-                }
-
-              });
-
-              video.addEventListener('error', (e) => {
-                console.error("Video load error", e);
-                 setThumbnailSrc(prev => ({...prev, [videoId]: FALLBACK_IMAGE}));
-              });
-
-            };
-
 
              const renderVideos = (videos) => {
                 if (!videos || videos.length === 0) {
@@ -682,11 +613,6 @@
 
                 return videos.map(video => {
                     const local = isLocalVideo(video.src);
-
-                    // Call getVideoThumbnail when rendering the video, and store the dataURL for this video id
-                    if(local && !thumbnailSrc[video.id]){
-                       getVideoThumbnail(video.src, video.id)
-                    }
                     
                     return (
                         <div key={video.id} className="video-container">
@@ -701,10 +627,16 @@
                                             controls
                                             preload="metadata"
                                         />
+                                        {/* GIF preview shown on hover */}
+                                        <img 
+                                            className="video-gif-preview"
+                                            src={getVideoGifPreview(video.src)} 
+                                            alt={`${video.title} preview`}
+                                        />
                                         <div id={`preview-${video.id}`} className="video-preview-container">
                                             <img 
                                                 className="video-preview"
-                                                src={thumbnailSrc[video.id] || FALLBACK_IMAGE}  // Use generated thumbnail or fallback
+                                                src={getVideoThumbnail(video.src)} 
                                                 alt={video.title} 
                                             />
                                             <div 
@@ -743,6 +675,27 @@
                 return src.startsWith('assets/videos/');
             };
 
+            // Function to get a thumbnail from local video
+            const getVideoThumbnail = (src) => {
+                // Get the video filename without extension and path
+                const videoName = src.split('/').pop().split('.')[0];
+                
+                // Check if thumbnail exists in our previews directory
+                const thumbnailPath = `assets/images/previews/${videoName}_thumbnail.png`;
+                
+                // Return the generated thumbnail if it exists, otherwise fall back to the video frame
+                return thumbnailPath;
+            };
+
+            // Function to get a GIF preview path for hover effect
+            const getVideoGifPreview = (src) => {
+                // Get the video filename without extension and path
+                const videoName = src.split('/').pop().split('.')[0];
+                
+                // Path to the generated GIF preview
+                return `assets/images/previews/${videoName}_preview.gif`;
+            };
+
             // Handle video play after preview
             const handleVideoPlay = (videoId) => {
                 const previewContainer = document.getElementById(`preview-${videoId}`);
@@ -757,8 +710,56 @@
                     }, 1000); // Start playing after fade-out completes
                 }
             };
-          
-            // Removed useEffect
+
+            // Effect to initialize video previews 
+            React.useEffect(() => {
+                // For videos that are local, preload thumbnails
+                const preloadThumbnailsAndGifs = () => {
+                    // Find all local videos
+                    const allVideos = [];
+                    Object.values(videoData).forEach(category => {
+                        category.forEach(video => {
+                            if (isLocalVideo(video.src)) {
+                                allVideos.push(video);
+                            }
+                        });
+                    });
+                    
+                    // Preload the thumbnails and GIFs
+                    allVideos.forEach(video => {
+                        const thumbnailPath = getVideoThumbnail(video.src);
+                        const gifPath = getVideoGifPreview(video.src);
+                        
+                        // Preload images
+                        const preloadThumbnail = new Image();
+                        preloadThumbnail.src = thumbnailPath;
+                        
+                        const preloadGif = new Image();
+                        preloadGif.src = gifPath;
+                    });
+                };
+
+                // Call function to preload images
+                preloadThumbnailsAndGifs();
+                
+                // Setup videos for initial display
+                const setupVideoPreviews = () => {
+                    const videos = document.querySelectorAll('.video-element');
+                    videos.forEach(video => {
+                        const videoId = video.id.replace('video-', '');
+                        const previewContainer = document.getElementById(`preview-${videoId}`);
+                        
+                        if (previewContainer) {
+                            // Don't auto-fade the preview unless manually clicked
+                            // Instead, let the play button handle starting the video
+                            video.currentTime = 0;
+                        }
+                    });
+                };
+                
+                // Call after components have rendered
+                setTimeout(setupVideoPreviews, 1000);
+            }, []);
 
             return (
                 <>
@@ -797,6 +798,6 @@
 
 
         ReactDOM.render(<App />, document.getElementById('root'));
-    </script
+    </script>
 </body>
 </html>
