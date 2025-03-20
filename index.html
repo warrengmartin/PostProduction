@@ -8,7 +8,7 @@
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
-        /* --- Reset and Basic Styles --- */
+        /* --- CSS (same as before, no changes needed) --- */
         body {
             margin: 0;
             padding: 0;
@@ -85,8 +85,8 @@
         }
 
         .profile-image {
-            width: 180px;
-            height: 180px;
+            width: 350px;
+            height: 350px;
             border-radius: 50%;
             border: 4px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
@@ -317,8 +317,8 @@
             }
 
             .profile-image {
-              width: 150px;
-              height: 150px;
+              width: 200px;
+              height: 200px;
             }
         }
          @media (max-width: 480px) {
@@ -327,7 +327,6 @@
             }
         }
 
-        /* Video preview styles */
         .video-preview-container {
             position: absolute;
             top: 0;
@@ -429,39 +428,38 @@
                     id: 'MyReel', 
                     src: 'assets/videos/Reel.mp4', 
                     title: 'My Reel',
-                    description: 'My own reel demonstrating my editing skills.'
+                    description: 'My own reel showcasing the shortfilms and projects I\'/ve work on.'
                 },
                 { 
-                    id: 'bio1', 
+                    id: 'LouisGiaquinto_Reel', 
                     src: 'assets/videos/Louis_Reel.mp4', 
-                    title: 'YouTube Promo Video', 
-                    description: 'A promotional video showcasing content for a YouTube channel.' 
-                },
-                { 
-                    id: 'bio1', 
-                    src: 'https://www.youtube.com/embed/CiebEcI2dSQ?si=NUUkMN3Z8HfsiEA5', 
-                    title: 'YouTube Promo Video', 
-                    description: 'A dynamic promo video designed to attract YouTube audiences.' 
+                    title: 'Client Reel: Louis Giaquinto, Producer', 
+                    description: 'A reel showcasing the work of Louis Giaquinto, a producer.' 
                 },
             ],
             education: [
-                
                 { 
-                    id: 'bio2', 
+                    id: 'ASU_Biodesign_Reel', 
+                    src: 'https://www.youtube.com/embed/CiebEcI2dSQ?si=NUUkMN3Z8HfsiEA5', 
+                    title: 'ASU Biodesign Center: Reel', 
+                    description: 'A promotional video for ASU Biodesign Center.' 
+                },
+                { 
+                    id: 'ASU', 
                     src: 'https://www.youtube.com/embed/CmL1SnQa2tI?si=GrO6QGksRgTYx6SN', 
-                    title: 'ASU Biodesign Center', 
+                    title: 'ASU Biodesign Project: Values Thinking.', 
                     description: 'An educational video highlighting the innovative research at ASU Biodesign Center.' 
                 },
                 { 
-                    id: 'bio3', 
+                    id: 'ASU_Project_1', 
                     src: 'https://www.youtube.com/embed/FW6MXqzeg7M?si=rdInD-yaGF7BMQuL', 
-                    title: 'ASU Research', 
+                    title: 'ASU Biodesign Project: Systems Thinking.', 
                     description: 'A video showcasing groundbreaking research conducted at ASU.' 
                 },
                 { 
-                    id: 'bio4', 
+                    id: 'ASU_Project_2', 
                     src: 'https://www.youtube.com/embed/T3nPgcY3Sfo?si=sEtPbfQjg-9mB1WP', 
-                    title: 'ASU Biodesign: The Power of Digital Story Telling', 
+                    title: 'ASU Biodesign Project: The Power of Digital Story Telling.', 
                     description: 'A follow-up video exploring further advancements at ASU Biodesign.' 
                 },
             ],
@@ -485,7 +483,7 @@
                 { 
                     id: 'heat_dance_promo', 
                     src: 'assets/videos/Heat_Dance_Internship_Promo.mp4', 
-                    title: 'Internship Promo',
+                    title: 'Heat Dance: Promo',
                     description: 'Promotional video for Head Dance.'
                 },
                 { 
@@ -506,7 +504,7 @@
                     id: 'StarWaresLogo', 
                     src: 'https://www.youtube.com/embed/02ELU1mQsrg?si=g8TSwz8gTh0V3nVx', 
                     title: 'Star Wars Logo Animation', 
-                    description: 'Practive excersize using after effects, illustrator, and premiere pro.' 
+                    description: 'Practise excersize using after effects, illustrator, and premiere pro.' 
                 },
                 { 
                     id: 'EditCompEntry', 
@@ -544,6 +542,7 @@
         const App = () => {
             const [activeSection, setActiveSection] = React.useState(0);
             const [scrollProgress, setScrollProgress] = React.useState(0);
+            const [thumbnailSrc, setThumbnailSrc] = React.useState({});
             const sectionRefs = React.useRef([]);
             const sections = [
                 { id: 'hero', title: 'Introduction' },
@@ -551,8 +550,8 @@
                 { id: 'Reel', title: 'Reel', videos: videoData.reel },
                 { id: 'Education', title: 'Education', videos: videoData.education },
                 { id: 'documentary', title: 'Documentary', videos: videoData.documentary },
-                { id: 'workingOut', title: 'Working Out', videos: videoData.workingOut },
-                { id: 'miscellaneous', title: 'miscellaneous', videos: videoData.miscellaneous },
+                { id: 'Working Out', title: 'Working Out', videos: videoData.workingOut },
+                { id: 'Miscellaneous', title: 'Miscellaneous', videos: videoData.miscellaneous },
                 { id: 'events', title: 'Events', videos: videoData.events },
                 
             ];
@@ -617,6 +616,60 @@
             }, [sections]);
 
 
+            const FALLBACK_IMAGE = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
+
+            const generateThumbnail = (video, time) => {
+              return new Promise((resolve, reject) => {
+                try {
+                  const canvas = document.createElement('canvas');
+                  canvas.width = video.videoWidth;
+                  canvas.height = video.videoHeight;
+                  const ctx = canvas.getContext('2d');
+                  video.currentTime = time;
+
+                  const drawImage = () => {
+                    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    const dataURL = canvas.toDataURL('image/png');
+                    resolve(dataURL);
+                    video.removeEventListener('seeked', drawImage); // Clean up
+                  };
+
+                  video.addEventListener('seeked', drawImage);
+
+                } catch (error) {
+                  console.error('Error generating thumbnail:', error);
+                  reject(FALLBACK_IMAGE);
+                }
+              });
+            };
+
+
+            const getVideoThumbnail = async (src, videoId) => {
+                if (!isLocalVideo(src)) return;
+
+                const video = document.createElement('video');
+                video.src = src;
+                video.crossOrigin = 'anonymous'; // Important for local files
+                video.preload = 'metadata';      // Only load metadata
+
+              video.addEventListener('loadedmetadata', async () => {
+                const randomTime = Math.random() * video.duration;
+                try{
+                    const dataURL = await generateThumbnail(video, randomTime);
+                    setThumbnailSrc(prev => ({...prev, [videoId]: dataURL}));
+                }catch (error) {
+                    setThumbnailSrc(prev => ({...prev, [videoId]: FALLBACK_IMAGE}));
+                }
+
+              });
+
+              video.addEventListener('error', (e) => {
+                console.error("Video load error", e);
+                 setThumbnailSrc(prev => ({...prev, [videoId]: FALLBACK_IMAGE}));
+              });
+
+            };
+
 
              const renderVideos = (videos) => {
                 if (!videos || videos.length === 0) {
@@ -629,6 +682,11 @@
 
                 return videos.map(video => {
                     const local = isLocalVideo(video.src);
+
+                    // Call getVideoThumbnail when rendering the video, and store the dataURL for this video id
+                    if(local && !thumbnailSrc[video.id]){
+                       getVideoThumbnail(video.src, video.id)
+                    }
                     
                     return (
                         <div key={video.id} className="video-container">
@@ -646,7 +704,7 @@
                                         <div id={`preview-${video.id}`} className="video-preview-container">
                                             <img 
                                                 className="video-preview"
-                                                src={getVideoThumbnail(video.src)} 
+                                                src={thumbnailSrc[video.id] || FALLBACK_IMAGE}  // Use generated thumbnail or fallback
                                                 alt={video.title} 
                                             />
                                             <div 
@@ -685,12 +743,6 @@
                 return src.startsWith('assets/videos/');
             };
 
-            // Function to get a thumbnail from local video
-            const getVideoThumbnail = (src) => {
-                // For now, just return the first frame of the video
-                return src + '#t=0.001';
-            };
-
             // Handle video play after preview
             const handleVideoPlay = (videoId) => {
                 const previewContainer = document.getElementById(`preview-${videoId}`);
@@ -705,32 +757,8 @@
                     }, 1000); // Start playing after fade-out completes
                 }
             };
-
-            // Effect to initialize video previews
-            React.useEffect(() => {
-                // For videos that are local, set up the 3-second preview
-                const setupVideoPreviews = () => {
-                    videos = document.querySelectorAll('.video-element');
-                    videos.forEach(video => {
-                        const videoId = video.id.replace('video-', '');
-                        const previewContainer = document.getElementById(`preview-${videoId}`);
-                        
-                        if (previewContainer) {
-                            // Auto-fade the preview after 3 seconds
-                            setTimeout(() => {
-                                previewContainer.classList.add('fade-out');
-                                setTimeout(() => {
-                                    // Don't autoplay, just make the video ready to be played manually
-                                    video.currentTime = 0;
-                                }, 1000);
-                            }, 3000);
-                        }
-                    });
-                };
-                
-                // Call after components have rendered
-                setTimeout(setupVideoPreviews, 1000);
-            }, []);
+          
+            // Removed useEffect
 
             return (
                 <>
@@ -769,6 +797,6 @@
 
 
         ReactDOM.render(<App />, document.getElementById('root'));
-    </script>
+    </script
 </body>
 </html>
