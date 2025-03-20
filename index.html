@@ -380,12 +380,171 @@
             height: 100%;
             background-color: #000;
         }
+        
+        /* Play button styles */
+        .play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 6;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        
+        .play-button::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 55%;
+            transform: translate(-50%, -50%);
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 10px 0 10px 20px;
+            border-color: transparent transparent transparent #ffffff;
+        }
+        
+        .play-button:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+
+        /* Modal styles */
+        .video-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .video-modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .video-modal-container {
+            width: 80%;
+            max-width: 900px;
+            background-color: #000;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+            position: relative;
+        }
+
+        .video-modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            transition: background-color 0.2s ease;
+        }
+
+        .video-modal-close::before,
+        .video-modal-close::after {
+            content: '';
+            position: absolute;
+            width: 15px;
+            height: 2px;
+            background-color: white;
+        }
+
+        .video-modal-close::before {
+            transform: rotate(45deg);
+        }
+
+        .video-modal-close::after {
+            transform: rotate(-45deg);
+        }
+
+        .video-modal-close:hover {
+            background-color: rgba(255, 0, 0, 0.8);
+        }
+
+        .video-modal-content {
+            position: relative;
+            padding-top: 56.25%; /* 16:9 aspect ratio */
+            width: 100%;
+        }
+
+        .video-modal-content video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+        }
+
+        .video-modal-details {
+            padding: 15px;
+            background-color: #111;
+        }
+
+        .video-modal-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 0 0 5px 0;
+            color: #fff;
+        }
+
+        .video-modal-description {
+            font-size: 0.9rem;
+            color: #aaa;
+            margin: 0;
+        }
+        
+        /* Ensure GIFs are more visible on hover */
+        .video-gif-preview {
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        
+        .video-container:hover .video-gif-preview {
+            opacity: 1;
+        }
 
     </style>
 </head>
 <body>
     <div class="loader"></div>
     <div id="root"></div>
+    
+    <!-- Video Modal Structure - Will be populated dynamically -->
+    <div id="videoModal" class="video-modal-overlay">
+        <div class="video-modal-container">
+            <div class="video-modal-close" onclick="closeVideoModal()"></div>
+            <div class="video-modal-content" id="videoModalContent">
+                <!-- Video will be inserted here -->
+            </div>
+            <div class="video-modal-details">
+                <h3 class="video-modal-title" id="videoModalTitle"></h3>
+                <p class="video-modal-description" id="videoModalDescription"></p>
+            </div>
+        </div>
+    </div>
 
     <script type="text/babel">
       const videoData = {
@@ -612,52 +771,43 @@
                 }
 
                 return videos.map(video => {
-                    const local = isLocalVideo(video.src);
-                    
                     return (
                         <div key={video.id} className="video-container">
                             <div className="video-frame-container">
-                                {local ? (
-                                    // Local video with preview
-                                    <>
-                                        <video 
-                                            id={`video-${video.id}`}
-                                            className="video-element" 
-                                            src={video.src} 
-                                            controls
-                                            preload="metadata"
-                                        />
-                                        {/* GIF preview shown on hover */}
-                                        <img 
-                                            className="video-gif-preview"
-                                            src={getVideoGifPreview(video.src)} 
-                                            alt={`${video.title} preview`}
-                                        />
-                                        <div id={`preview-${video.id}`} className="video-preview-container">
-                                            <img 
-                                                className="video-preview"
-                                                src={getVideoThumbnail(video.src)} 
-                                                alt={video.title} 
-                                            />
-                                            <div 
-                                                className="play-button" 
-                                                onClick={() => handleVideoPlay(video.id)}
-                                            />
+                                {/* Unified behavior for both local and embedded videos */}
+                                <div 
+                                    className="video-preview-container"
+                                    onClick={() => openVideoModal(video.id)}
+                                    style={{ cursor: 'pointer' }}
+                                >
+                                    {/* Create hidden iframe for embedded videos to load before clicking */}
+                                    {!isLocalVideo(video.src) && (
+                                        <div style={{ display: 'none' }}>
+                                            <iframe src={video.src} title={`preload-${video.id}`} />
                                         </div>
-                                    </>
-                                ) : (
-                                    // Embedded video (YouTube, Vimeo)
-                                    <iframe
-                                        src={video.src}
-                                        title={video.title}
-                                        width="560"
-                                        height="315"
-                                        frameBorder="0"
-                                        allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                        allowFullScreen
-                                        loading="lazy"
+                                    )}
+                                    
+                                    {/* GIF preview shown on hover */}
+                                    <img 
+                                        className="video-gif-preview"
+                                        src={getVideoGifPreview(video.src)} 
+                                        alt={`${video.title} preview`}
+                                        onError={(e) => {
+                                            // If GIF fails to load, use the thumbnail
+                                            e.target.src = getVideoThumbnail(video.src);
+                                        }}
                                     />
-                                )}
+                                    <img 
+                                        className="video-preview"
+                                        src={getVideoThumbnail(video.src)} 
+                                        alt={video.title}
+                                        onError={(e) => {
+                                            // Fallback if thumbnail fails to load
+                                            e.target.src = 'assets/images/video-placeholder.png';
+                                        }}
+                                    />
+                                    <div className="play-button" />
+                                </div>
                             </div>
                             <div className="video-info">
                                 <h3 className="video-title">{video.title}</h3>
@@ -675,57 +825,192 @@
                 return src.startsWith('assets/videos/');
             };
 
-            // Function to get a thumbnail from local video
+            // Function to determine if a video is from YouTube
+            const isYouTubeVideo = (src) => {
+                return src.includes('youtube.com') || src.includes('youtu.be');
+            };
+
+            // Function to determine if a video is from Vimeo
+            const isVimeoVideo = (src) => {
+                return src.includes('vimeo.com');
+            };
+
+            // Function to extract YouTube video ID
+            const getYouTubeVideoId = (src) => {
+                let videoId = '';
+                
+                if (src.includes('embed/')) {
+                    // Format: youtube.com/embed/VIDEO_ID
+                    videoId = src.split('embed/')[1].split('?')[0];
+                } else if (src.includes('watch?v=')) {
+                    // Format: youtube.com/watch?v=VIDEO_ID
+                    videoId = src.split('watch?v=')[1].split('&')[0];
+                } else if (src.includes('youtu.be/')) {
+                    // Format: youtu.be/VIDEO_ID
+                    videoId = src.split('youtu.be/')[1].split('?')[0];
+                }
+                
+                return videoId;
+            };
+
+            // Function to extract Vimeo video ID
+            const getVimeoVideoId = (src) => {
+                let videoId = '';
+                
+                if (src.includes('player.vimeo.com/video/')) {
+                    // Format: player.vimeo.com/video/VIDEO_ID
+                    videoId = src.split('player.vimeo.com/video/')[1].split('?')[0];
+                } else if (src.includes('vimeo.com/')) {
+                    // Format: vimeo.com/VIDEO_ID
+                    videoId = src.split('vimeo.com/')[1].split('?')[0];
+                }
+                
+                return videoId;
+            };
+
+            // Function to get a thumbnail from video
             const getVideoThumbnail = (src) => {
-                // Get the video filename without extension and path
-                const videoName = src.split('/').pop().split('.')[0];
+                // Check if it's a local video
+                if (isLocalVideo(src)) {
+                    // Get the video filename without extension and path
+                    const videoName = src.split('/').pop().split('.')[0];
+                    // Remove any timestamp fragments from the filename (e.g., #t=1.9)
+                    const cleanVideoName = videoName.split('#')[0];
+                    
+                    // Return the generated thumbnail path
+                    return `assets/images/previews/${cleanVideoName}_thumbnail.png`;
+                } 
+                // Check if it's a YouTube video
+                else if (isYouTubeVideo(src)) {
+                    const videoId = getYouTubeVideoId(src);
+                    return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+                } 
+                // Check if it's a Vimeo video
+                else if (isVimeoVideo(src)) {
+                    const videoId = getVimeoVideoId(src);
+                    // Use a placeholder for Vimeo - ideally we would fetch the actual thumbnail
+                    // but that requires an API call
+                    return `https://vumbnail.com/${videoId}.jpg`;
+                }
                 
-                // Check if thumbnail exists in our previews directory
-                const thumbnailPath = `assets/images/previews/${videoName}_thumbnail.png`;
-                
-                // Return the generated thumbnail if it exists, otherwise fall back to the video frame
-                return thumbnailPath;
+                // Default placeholder for unknown video sources
+                return 'assets/images/video-placeholder.png';
             };
 
             // Function to get a GIF preview path for hover effect
             const getVideoGifPreview = (src) => {
-                // Get the video filename without extension and path
-                const videoName = src.split('/').pop().split('.')[0];
+                // For local videos, we can use our GIF previews
+                if (isLocalVideo(src)) {
+                    // Get the video filename without extension and path
+                    const videoName = src.split('/').pop().split('.')[0];
+                    // Remove any timestamp fragments from the filename (e.g., #t=1.9)
+                    const cleanVideoName = videoName.split('#')[0];
+                    
+                    // Path to the generated GIF preview
+                    return `assets/images/previews/${cleanVideoName}_preview.gif`;
+                }
                 
-                // Path to the generated GIF preview
-                return `assets/images/previews/${videoName}_preview.gif`;
+                // For embedded videos (YouTube/Vimeo), we'll just use the same thumbnail
+                // as we don't have GIF previews for them
+                return getVideoThumbnail(src);
             };
 
-            // Handle video play after preview
-            const handleVideoPlay = (videoId) => {
-                const previewContainer = document.getElementById(`preview-${videoId}`);
+            // Function to open the video modal
+            const openVideoModal = (videoId) => {
                 const videoElement = document.getElementById(`video-${videoId}`);
+                const videoData = findVideoById(videoId);
                 
-                if (previewContainer) {
-                    previewContainer.classList.add('fade-out');
-                    setTimeout(() => {
-                        if (videoElement) {
-                            videoElement.play();
-                        }
-                    }, 1000); // Start playing after fade-out completes
+                if (!videoData) return;
+                
+                const modal = document.getElementById('videoModal');
+                const modalContent = document.getElementById('videoModalContent');
+                const modalTitle = document.getElementById('videoModalTitle');
+                const modalDescription = document.getElementById('videoModalDescription');
+                
+                // Clear previous content
+                modalContent.innerHTML = '';
+                
+                if (isLocalVideo(videoData.src)) {
+                    // For local videos
+                    const videoClone = document.createElement('video');
+                    videoClone.src = videoData.src;
+                    videoClone.controls = true;
+                    videoClone.autoplay = true;
+                    videoClone.className = 'modal-video';
+                    modalContent.appendChild(videoClone);
+                } else {
+                    // For embedded videos (YouTube, Vimeo)
+                    const iframe = document.createElement('iframe');
+                    iframe.src = videoData.src;
+                    iframe.setAttribute('frameborder', '0');
+                    iframe.setAttribute('allowfullscreen', 'true');
+                    iframe.setAttribute('allow', 'accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
+                    iframe.style.width = '100%';
+                    iframe.style.height = '100%';
+                    iframe.style.position = 'absolute';
+                    iframe.style.top = '0';
+                    iframe.style.left = '0';
+                    modalContent.appendChild(iframe);
                 }
+                
+                // Set modal details
+                modalTitle.textContent = videoData.title;
+                modalDescription.textContent = videoData.description || '';
+                
+                // Show modal
+                modal.classList.add('active');
+                
+                // Prevent body scrolling when modal is open
+                document.body.style.overflow = 'hidden';
+            };
+            
+            // Function to close the video modal
+            const closeVideoModal = () => {
+                const modal = document.getElementById('videoModal');
+                const modalContent = document.getElementById('videoModalContent');
+                
+                // Hide modal
+                modal.classList.remove('active');
+                
+                // Clear video to stop playback
+                setTimeout(() => {
+                    modalContent.innerHTML = '';
+                }, 300); // Wait for fade out transition
+                
+                // Re-enable body scrolling
+                document.body.style.overflow = '';
+            };
+            
+            // Find video data by ID
+            const findVideoById = (videoId) => {
+                let foundVideo = null;
+                
+                Object.values(videoData).forEach(category => {
+                    const video = category.find(v => v.id === videoId);
+                    if (video) foundVideo = video;
+                });
+                
+                return foundVideo;
+            };
+
+            // Handle video play button click - now opens modal
+            const handleVideoPlay = (videoId) => {
+                openVideoModal(videoId);
             };
 
             // Effect to initialize video previews 
             React.useEffect(() => {
                 // For videos that are local, preload thumbnails
                 const preloadThumbnailsAndGifs = () => {
-                    // Find all local videos
+                    // Find all videos
                     const allVideos = [];
                     Object.values(videoData).forEach(category => {
                         category.forEach(video => {
-                            if (isLocalVideo(video.src)) {
-                                allVideos.push(video);
-                            }
+                            allVideos.push(video);
                         });
                     });
                     
-                    // Preload the thumbnails and GIFs
+                    // Preload thumbnails for all videos
                     allVideos.forEach(video => {
                         const thumbnailPath = getVideoThumbnail(video.src);
                         const gifPath = getVideoGifPreview(video.src);
@@ -736,29 +1021,50 @@
                         
                         const preloadGif = new Image();
                         preloadGif.src = gifPath;
+                        
+                        console.log(`Preloaded: ${video.id} - Thumbnail: ${thumbnailPath}, GIF: ${gifPath}`);
                     });
+                    
+                    // Create a placeholder image if it doesn't exist
+                    const placeholderImage = new Image();
+                    placeholderImage.src = 'assets/images/video-placeholder.png';
                 };
 
                 // Call function to preload images
                 preloadThumbnailsAndGifs();
                 
-                // Setup videos for initial display
-                const setupVideoPreviews = () => {
-                    const videos = document.querySelectorAll('.video-element');
-                    videos.forEach(video => {
-                        const videoId = video.id.replace('video-', '');
-                        const previewContainer = document.getElementById(`preview-${videoId}`);
+                // Setup video click handlers
+                const setupVideoClickHandlers = () => {
+                    // Allow a small delay for React to render the DOM elements
+                    setTimeout(() => {
+                        document.querySelectorAll('.video-preview-container').forEach(container => {
+                            const videoId = container.id.replace('preview-', '');
+                            container.style.cursor = 'pointer';
+                            container.addEventListener('click', () => handleVideoPlay(videoId));
+                        });
                         
-                        if (previewContainer) {
-                            // Don't auto-fade the preview unless manually clicked
-                            // Instead, let the play button handle starting the video
-                            video.currentTime = 0;
-                        }
-                    });
+                        // Make the close button function globally accessible
+                        window.closeVideoModal = closeVideoModal;
+                        
+                        // Close modal when clicking outside the content
+                        const modal = document.getElementById('videoModal');
+                        modal.addEventListener('click', (e) => {
+                            if (e.target === modal) {
+                                closeVideoModal();
+                            }
+                        });
+                        
+                        // Close modal with ESC key
+                        document.addEventListener('keydown', (e) => {
+                            if (e.key === 'Escape') {
+                                closeVideoModal();
+                            }
+                        });
+                    }, 1000);
                 };
                 
-                // Call after components have rendered
-                setTimeout(setupVideoPreviews, 1000);
+                setupVideoClickHandlers();
+                
             }, []);
 
             return (
